@@ -33,10 +33,7 @@ export const validateAppData = (data: any): data is AppState => {
   }
 
   // Validate arrays
-  if (
-    !Array.isArray(data.transactions) ||
-    !Array.isArray(data.programs)
-  ) {
+  if (!Array.isArray(data.transactions) || !Array.isArray(data.programs)) {
     console.error("Invalid array data structure");
     return false;
   }
@@ -57,7 +54,11 @@ export const validateAppData = (data: any): data is AppState => {
   }
   // Validate program entries
   for (const program of data.programs) {
-    if (!program.id || !program.name || typeof program.allocatedBudget !== "number") {
+    if (
+      !program.id ||
+      !program.name ||
+      typeof program.allocatedBudget !== "number"
+    ) {
       console.error("Invalid program entry:", program);
       return false;
     }

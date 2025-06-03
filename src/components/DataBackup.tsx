@@ -135,7 +135,8 @@ const DataBackup: React.FC = () => {
         window.confirm(
           "This will permanently delete all transaction and program data. Are you absolutely sure?"
         )
-      ) {        setState({
+      ) {
+        setState({
           user: null,
           transactions: [],
           programs: [],
