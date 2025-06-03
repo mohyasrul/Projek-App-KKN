@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KKN Budget Nexus - QR Code</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        max-width: 400px;
+      }
+      h1 {
+        margin-bottom: 10px;
+        font-size: 2em;
+      }
+      .subtitle {
+        margin-bottom: 30px;
+        opacity: 0.9;
+      }
+      .qr-container {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        display: inline-block;
+      }
+      .url {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        word-break: break-all;
+        font-family: monospace;
+      }
+      .credentials {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        text-align: left;
+      }
+      .cred-item {
+        margin: 10px 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+      }
+      .steps {
+        text-align: left;
+        margin-top: 20px;
+      }
+      .step {
+        margin: 10px 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📱 KKN Budget Nexus</h1>
+      <p class="subtitle">Progressive Web App</p>
+
+      <div class="qr-container">
+        <div id="qrcode"></div>
+      </div>
+
+      <div class="url">
+        <strong>https://kkn-budget-nexus.netlify.app</strong>
+      </div>
+
+      <div class="credentials">
+        <h3>🔐 Login Credentials</h3>
+        <div class="cred-item">
+          <strong>Treasurer:</strong><br />
+          Username: <code>bendahara</code><br />
+          Password: <code>password123</code>
+        </div>
+        <div class="cred-item">
+          <strong>Member:</strong><br />
+          Username: <code>anggota</code><br />
+          Password: <code>password123</code>
+        </div>
+      </div>
+
+      <div class="steps">
+        <h3>📲 Installation Steps</h3>
+        <div class="step"><strong>1.</strong> Scan QR code or visit URL</div>
+        <div class="step">
+          <strong>2.</strong> Tap "Install" or "Add to Home Screen"
+        </div>
+        <div class="step"><strong>3.</strong> Use like a native app!</div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script>
+      // Generate QR Code
+      const qr = qrcode(0, "M");
+      qr.addData("https://kkn-budget-nexus.netlify.app");
+      qr.make();
+
+      // Display QR Code
+      document.getElementById("qrcode").innerHTML = qr.createImgTag(5, 10);
+
+      // Style the QR code image
+      const img = document.querySelector("#qrcode img");
+      if (img) {
+        img.style.display = "block";
+        img.style.margin = "0 auto";
+      }
+    </script>
+  </body>
+</html>

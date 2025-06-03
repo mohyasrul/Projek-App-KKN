@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PWA Test Page</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+      .success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>KKN Budget Nexus - PWA Test</h1>
+
+    <div id="results"></div>
+
+    <button onclick="testServiceWorker()">Test Service Worker</button>
+    <button onclick="testManifest()">Test Manifest</button>
+    <button onclick="testOfflineStorage()">Test Offline Storage</button>
+    <button onclick="testInstallability()">Test Install Prompt</button>
+
+    <script>
+      const results = document.getElementById("results");
+
+      function addResult(message, type = "info") {
+        const div = document.createElement("div");
+        div.className = `status ${type}`;
+        div.textContent = message;
+        results.appendChild(div);
+      }
+
+      async function testServiceWorker() {
+        try {
+          if ("serviceWorker" in navigator) {
+            const registration = await navigator.serviceWorker.register(
+              "/sw.js"
+            );
+            addResult("✅ Service Worker registered successfully", "success");
+            addResult(`Scope: ${registration.scope}`, "info");
+          } else {
+            addResult("❌ Service Worker not supported", "error");
+          }
+        } catch (error) {
+          addResult(
+            `❌ Service Worker registration failed: ${error.message}`,
+            "error"
+          );
+        }
+      }
+
+      async function testManifest() {
+        try {
+          const response = await fetch("/manifest.webmanifest");
+          if (response.ok) {
+            const manifest = await response.json();
+            addResult("✅ Manifest loaded successfully", "success");
+            addResult(`App name: ${manifest.name}`, "info");
+            addResult(`Icons: ${manifest.icons.length} found`, "info");
+          } else {
+            addResult("❌ Manifest not found", "error");
+          }
+        } catch (error) {
+          addResult(`❌ Manifest test failed: ${error.message}`, "error");
+        }
+      }
+
+      function testOfflineStorage() {
+        try {
+          const testData = { test: "PWA offline test", timestamp: Date.now() };
+          localStorage.setItem("pwa-test", JSON.stringify(testData));
+          const retrieved = JSON.parse(localStorage.getItem("pwa-test"));
+
+          if (retrieved && retrieved.test === testData.test) {
+            addResult("✅ Local Storage working correctly", "success");
+            addResult(`Stored and retrieved: ${retrieved.test}`, "info");
+          } else {
+            addResult("❌ Local Storage test failed", "error");
+          }
+        } catch (error) {
+          addResult(`❌ Storage test failed: ${error.message}`, "error");
+        }
+      }
+
+      function testInstallability() {
+        if (window.matchMedia("(display-mode: standalone)").matches) {
+          addResult(
+            "✅ App is running in standalone mode (installed)",
+            "success"
+          );
+        } else {
+          addResult("ℹ️ App is running in browser mode", "info");
+        }
+
+        // Check if install prompt is available
+        window.addEventListener("beforeinstallprompt", (e) => {
+          addResult("✅ Install prompt available", "success");
+        });
+      }
+
+      // Auto-run basic tests
+      document.addEventListener("DOMContentLoaded", () => {
+        addResult("🚀 Starting PWA tests...", "info");
+        testServiceWorker();
+        testManifest();
+        testOfflineStorage();
+        testInstallability();
+      });
+
+      // Test online/offline status
+      window.addEventListener("online", () => {
+        addResult("🌐 App is online", "success");
+      });
+
+      window.addEventListener("offline", () => {
+        addResult("📡 App is offline", "info");
+      });
+    </script>
+  </body>
+</html>
