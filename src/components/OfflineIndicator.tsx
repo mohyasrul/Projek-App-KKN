@@ -39,9 +39,7 @@ const OfflineIndicator: React.FC = () => {
             isOnline ? "bg-green-500" : "bg-red-500"
           }`}
         />
-        <span className="font-medium">
-          {isOnline ? "Online" : "Offline"}
-        </span>
+        <span className="font-medium">{isOnline ? "Online" : "Offline"}</span>
       </div>
     );
   }
