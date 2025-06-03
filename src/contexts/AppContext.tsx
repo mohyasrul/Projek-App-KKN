@@ -5,26 +5,42 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
+import { encryptData, decryptData, generateDataHash } from "../utils/encryption";
+import { validateAppData, sanitizeData, validateDataSize } from "../utils/dataValidation";
 
-// Enhanced storage for offline functionality
+// Enhanced storage for offline functionality with encryption
 const STORAGE_KEY = "kkn-budget-nexus-data";
-const STORAGE_VERSION = "1.0";
+const STORAGE_VERSION = "1.2.0";
 
 interface StorageData {
   version: string;
   timestamp: number;
+  hash: string;
   data: AppState;
 }
 
 const saveToStorage = (state: AppState) => {
   try {
+    // Validate data size before saving
+    if (!validateDataSize(state)) {
+      console.error("Data size exceeds limits, not saving");
+      return;
+    }
+
+    // Sanitize data before saving
+    const sanitizedState = sanitizeData(state);
+    
     const dataToSave: StorageData = {
       version: STORAGE_VERSION,
       timestamp: Date.now(),
-      data: state,
+      hash: generateDataHash(sanitizedState),
+      data: sanitizedState,
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-    console.log("Data saved to localStorage");
+    
+    // Encrypt the data before storing
+    const encryptedData = encryptData(dataToSave);
+    localStorage.setItem(STORAGE_KEY, encryptedData);
+    console.log("Data saved to localStorage (encrypted)");
   } catch (error) {
     console.error("Failed to save to localStorage:", error);
   }
@@ -35,16 +51,46 @@ const loadFromStorage = (): AppState | null => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
 
-    const parsed: StorageData = JSON.parse(stored);
+    // Try to decrypt the data
+    const parsed: StorageData = decryptData(stored);
+    
+    // Validate version compatibility
     if (parsed.version === STORAGE_VERSION) {
-      console.log("Data loaded from localStorage");
+      // Validate data structure
+      if (!validateAppData(parsed.data)) {
+        console.error("Stored data validation failed");
+        return null;
+      }
+      
+      // Verify data integrity
+      const expectedHash = generateDataHash(parsed.data);
+      if (parsed.hash && parsed.hash !== expectedHash) {
+        console.warn("Data integrity check failed, data may be corrupted");
+        // Still return data but log the warning
+      }
+      
+      console.log("Data loaded from localStorage (decrypted and validated)");
       return parsed.data;
     }
+    
     // Handle version migration here if needed
     console.log("Storage version mismatch, using defaults");
     return null;
   } catch (error) {
-    console.error("Failed to load from localStorage:", error);
+    console.error("Failed to load from localStorage (decryption/validation failed):", error);
+    // If decryption fails, try loading as plain JSON for backward compatibility
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.data && validateAppData(parsed.data)) {
+          console.log("Loaded data in legacy format, will be encrypted on next save");
+          return parsed.data;
+        }
+      }
+    } catch (legacyError) {
+      console.error("Legacy format loading also failed:", legacyError);
+    }
     return null;
   }
 };

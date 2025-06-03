@@ -1,15 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
 import { formatCurrency } from '@/utils/formatters';
+import DataBackup from './DataBackup';
+import SecurityStatus from './SecurityStatus';
 import { 
   Plus, 
   Minus, 
   Wallet, 
   FileText, 
   TrendingUp, 
-  TrendingDown 
+  TrendingDown,
+  Shield
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -20,6 +24,8 @@ const Dashboard = () => {
     getTotalExpense, 
     getBalance 
   } = useApp();
+  
+  const [showBackup, setShowBackup] = useState(false);
 
   const totalIncome = getTotalIncome();
   const totalExpense = getTotalExpense();
@@ -173,6 +179,28 @@ const Dashboard = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+      
+      {/* Data Backup Section */}
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Data Management & Security</h2>
+          <Button
+            onClick={() => setShowBackup(!showBackup)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Shield size={16} />
+            {showBackup ? 'Hide' : 'Show'} Backup Options
+          </Button>
+        </div>
+        
+        {/* Security Status - Always visible */}
+        <div className="mb-4">
+          <SecurityStatus />
+        </div>
+        
+        {showBackup && <DataBackup />}
       </div>
     </div>
   );
