@@ -1,7 +1,7 @@
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 // Secure encryption key - in production, this should be environment-specific
-const ENCRYPTION_KEY = 'KKN-SINGHEMAT-SECURE-KEY-2025';
+const ENCRYPTION_KEY = "KKN-SINGHEMAT-SECURE-KEY-2025";
 
 /**
  * Encrypts data using AES encryption
@@ -11,11 +11,14 @@ const ENCRYPTION_KEY = 'KKN-SINGHEMAT-SECURE-KEY-2025';
 export const encryptData = (data: any): string => {
   try {
     const jsonString = JSON.stringify(data);
-    const encrypted = CryptoJS.AES.encrypt(jsonString, ENCRYPTION_KEY).toString();
+    const encrypted = CryptoJS.AES.encrypt(
+      jsonString,
+      ENCRYPTION_KEY
+    ).toString();
     return encrypted;
   } catch (error) {
-    console.error('Encryption failed:', error);
-    throw new Error('Failed to encrypt data');
+    console.error("Encryption failed:", error);
+    throw new Error("Failed to encrypt data");
   }
 };
 
@@ -28,15 +31,15 @@ export const decryptData = (encryptedData: string): any => {
   try {
     const decrypted = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY);
     const decryptedString = decrypted.toString(CryptoJS.enc.Utf8);
-    
+
     if (!decryptedString) {
-      throw new Error('Invalid encryption key or corrupted data');
+      throw new Error("Invalid encryption key or corrupted data");
     }
-    
+
     return JSON.parse(decryptedString);
   } catch (error) {
-    console.error('Decryption failed:', error);
-    throw new Error('Failed to decrypt data');
+    console.error("Decryption failed:", error);
+    throw new Error("Failed to decrypt data");
   }
 };
 
@@ -56,12 +59,15 @@ export const generateDataHash = (data: any): string => {
  * @param expectedHash - Expected hash value
  * @returns Boolean indicating if data is valid
  */
-export const verifyDataIntegrity = (data: any, expectedHash: string): boolean => {
+export const verifyDataIntegrity = (
+  data: any,
+  expectedHash: string
+): boolean => {
   try {
     const currentHash = generateDataHash(data);
     return currentHash === expectedHash;
   } catch (error) {
-    console.error('Data verification failed:', error);
+    console.error("Data verification failed:", error);
     return false;
   }
 };

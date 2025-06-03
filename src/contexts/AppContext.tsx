@@ -5,8 +5,16 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { encryptData, decryptData, generateDataHash } from "../utils/encryption";
-import { validateAppData, sanitizeData, validateDataSize } from "../utils/dataValidation";
+import {
+  encryptData,
+  decryptData,
+  generateDataHash,
+} from "../utils/encryption";
+import {
+  validateAppData,
+  sanitizeData,
+  validateDataSize,
+} from "../utils/dataValidation";
 
 // Enhanced storage for offline functionality with encryption
 const STORAGE_KEY = "kkn-budget-nexus-data";
@@ -29,14 +37,14 @@ const saveToStorage = (state: AppState) => {
 
     // Sanitize data before saving
     const sanitizedState = sanitizeData(state);
-    
+
     const dataToSave: StorageData = {
       version: STORAGE_VERSION,
       timestamp: Date.now(),
       hash: generateDataHash(sanitizedState),
       data: sanitizedState,
     };
-    
+
     // Encrypt the data before storing
     const encryptedData = encryptData(dataToSave);
     localStorage.setItem(STORAGE_KEY, encryptedData);
@@ -53,7 +61,7 @@ const loadFromStorage = (): AppState | null => {
 
     // Try to decrypt the data
     const parsed: StorageData = decryptData(stored);
-    
+
     // Validate version compatibility
     if (parsed.version === STORAGE_VERSION) {
       // Validate data structure
@@ -61,30 +69,35 @@ const loadFromStorage = (): AppState | null => {
         console.error("Stored data validation failed");
         return null;
       }
-      
+
       // Verify data integrity
       const expectedHash = generateDataHash(parsed.data);
       if (parsed.hash && parsed.hash !== expectedHash) {
         console.warn("Data integrity check failed, data may be corrupted");
         // Still return data but log the warning
       }
-      
+
       console.log("Data loaded from localStorage (decrypted and validated)");
       return parsed.data;
     }
-    
+
     // Handle version migration here if needed
     console.log("Storage version mismatch, using defaults");
     return null;
   } catch (error) {
-    console.error("Failed to load from localStorage (decryption/validation failed):", error);
+    console.error(
+      "Failed to load from localStorage (decryption/validation failed):",
+      error
+    );
     // If decryption fails, try loading as plain JSON for backward compatibility
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.data && validateAppData(parsed.data)) {
-          console.log("Loaded data in legacy format, will be encrypted on next save");
+          console.log(
+            "Loaded data in legacy format, will be encrypted on next save"
+          );
           return parsed.data;
         }
       }
@@ -123,7 +136,7 @@ export interface User {
   name: string;
 }
 
-interface AppState {
+export interface AppState {
   user: User | null;
   transactions: Transaction[];
   programs: Program[];
@@ -144,6 +157,9 @@ interface AppContextType extends AppState {
   getTotalExpense: () => number;
   getBalance: () => number;
   getExpensesByProgram: (programId: string) => Transaction[];
+  // Security and backup methods
+  state: AppState;
+  setState: (state: AppState) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -346,6 +362,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         getTotalExpense,
         getBalance,
         getExpensesByProgram,
+        // Security and backup methods
+        state,
+        setState,
       }}
     >
       {children}
