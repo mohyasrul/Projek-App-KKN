@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
+import OfflineIndicator from "./OfflineIndicator";
 import {
   LayoutDashboard,
   Plus,
@@ -27,10 +28,11 @@ const Navigation: React.FC<NavigationProps> = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <nav className="bg-gradient-to-r from-blue-800 to-blue-600 text-white p-4 shadow-lg">
+    <nav className="bg-gradient-to-r from-blue-800 to-blue-600 text-white p-4 shadow-lg relative">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold">SING HEMAT</h1>
+        <h1 className="text-xl font-bold">KKN15</h1>
         <div className="flex items-center space-x-2">
+          <OfflineIndicator />
           <div className="flex items-center space-x-2 text-sm">
             <User className="h-4 w-4" />
             <span>{user?.name}</span>

@@ -13,6 +13,9 @@ import {
   TrendingUp,
   TrendingDown,
   Shield,
+  Settings,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -25,6 +28,7 @@ const Dashboard = () => {
   } = useApp();
 
   const [showBackup, setShowBackup] = useState(false);
+  const [showDataManagement, setShowDataManagement] = useState(true);
 
   const totalIncome = getTotalIncome();
   const totalExpense = getTotalExpense();
@@ -205,26 +209,42 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* Data Backup Section */}
+      {/* Data Management & Security Section */}
       <div className="mt-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Data Management & Security</h2>
-          <Button
-            onClick={() => setShowBackup(!showBackup)}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Shield size={16} />
-            {showBackup ? "Hide" : "Show"} Backup Options
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setShowDataManagement(!showDataManagement)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              {showDataManagement ? <EyeOff size={16} /> : <Eye size={16} />}
+              {showDataManagement ? "Hide" : "Show"} Section
+            </Button>
+            {showDataManagement && (
+              <Button
+                onClick={() => setShowBackup(!showBackup)}
+                variant="outline"
+                className="flex items-center gap-2"
+              >
+                <Settings size={16} />
+                {showBackup ? "Hide" : "Show"} Backup
+              </Button>
+            )}
+          </div>
         </div>
 
-        {/* Security Status - Always visible */}
-        <div className="mb-4">
-          <SecurityStatus />
-        </div>
+        {showDataManagement && (
+          <>
+            {/* Security Status - Always visible when section is shown */}
+            <div className="mb-4">
+              <SecurityStatus />
+            </div>
 
-        {showBackup && <DataBackup />}
+            {showBackup && <DataBackup />}
+          </>
+        )}
       </div>
     </div>
   );

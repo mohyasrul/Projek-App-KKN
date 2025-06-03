@@ -25,16 +25,24 @@ const OfflineIndicator: React.FC = () => {
       window.removeEventListener("offline", handleOffline);
     };
   }, []);
-
   // Only show when offline or briefly when coming back online
   if (!isOnline || showOnlineIndicator) {
     return (
       <div
-        className={`fixed top-4 right-16 z-50 w-3 h-3 rounded-full transition-all duration-300 ${
-          isOnline ? "bg-green-500" : "bg-red-500"
+        className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs transition-all duration-300 ${
+          isOnline ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
         }`}
-        title={isOnline ? "Online" : "Offline"}
-      />
+        title={isOnline ? "Back Online" : "You're Offline"}
+      >
+        <div
+          className={`w-2 h-2 rounded-full ${
+            isOnline ? "bg-green-500" : "bg-red-500"
+          }`}
+        />
+        <span className="font-medium">
+          {isOnline ? "Online" : "Offline"}
+        </span>
+      </div>
     );
   }
 

@@ -1,15 +1,20 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useApp } from '@/contexts/AppContext';
-import { useToast } from '@/hooks/use-toast';
-import { User, Lock } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useApp } from "@/contexts/AppContext";
+import { useToast } from "@/hooks/use-toast";
+import { User, Lock } from "lucide-react";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useApp();
   const { toast } = useToast();
@@ -21,20 +26,20 @@ const Login = () => {
     // Simulate loading
     setTimeout(() => {
       const success = login(username, password);
-      
+
       if (success) {
         toast({
           title: "Login Berhasil",
-          description: "Selamat datang di KKN Finance Manager",
+          description: "Selamat datang di KKN15 Finance",
         });
       } else {
         toast({
           title: "Login Gagal",
-          description: "Username atau password salah",
+          description: "Cik atuh eta username atawa password na salah",
           variant: "destructive",
         });
       }
-      
+
       setIsLoading(false);
     }, 1000);
   };
@@ -44,9 +49,11 @@ const Login = () => {
       <div className="w-full max-w-md">
         <Card className="backdrop-blur-lg bg-white/10 border-white/20 shadow-2xl">
           <CardHeader className="text-center text-white">
-            <CardTitle className="text-3xl font-bold mb-2">KKN Finance</CardTitle>
+            <CardTitle className="text-3xl font-bold mb-2">
+              KKN15 Finance
+            </CardTitle>
             <CardDescription className="text-blue-100">
-              Sistem Manajemen Keuangan KKN
+              Sing Hemat, Sing Aman, Sing Teratur
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -77,18 +84,23 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full bg-white text-blue-700 hover:bg-blue-50 font-semibold"
                 disabled={isLoading}
               >
-                {isLoading ? 'Masuk...' : 'Masuk'}
+                {isLoading ? "Masuk..." : "Masuk"}
               </Button>
             </form>
             <div className="mt-6 text-sm text-blue-100 text-center">
-              <p className="mb-2">Akun Demo:</p>
-              <p>Bendahara: <strong>bendahara</strong> / password123</p>
-              <p>Anggota: <strong>anggota</strong> / password123</p>
+              <p className="mb-2">Dibuat dengan:</p>
+              <p>
+                <strong>Cinta</strong> , <strong>Dedikasi</strong>, dan{" "}
+                <strong>Semangat</strong>
+              </p>
+              <p>
+                <strong>Love Pokonamah</strong>
+              </p>
             </div>
           </CardContent>
         </Card>

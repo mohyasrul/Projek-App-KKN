@@ -11,7 +11,6 @@ import IncomeManagement from "@/components/IncomeManagement";
 import ExpenseManagement from "@/components/ExpenseManagement";
 import ProgramManagement from "@/components/ProgramManagement";
 import Reports from "@/components/Reports";
-import OfflineIndicator from "@/components/OfflineIndicator";
 import UpdateNotification from "@/components/UpdateNotification";
 
 const queryClient = new QueryClient();
@@ -44,7 +43,6 @@ const MainApp = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
-      <OfflineIndicator />
       <UpdateNotification />
       <main className="p-4 md:p-6">{renderContent()}</main>
     </div>
