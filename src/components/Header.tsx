@@ -5,6 +5,7 @@ import OfflineIndicator from "./OfflineIndicator";
 import { Bell, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { APP_CONFIG } from "@/config/app.config";
 
 interface HeaderProps {
   title: string;
@@ -41,17 +42,17 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle }) => {
         {/* Quick Search */}
         <div className="flex items-center space-x-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />{" "}
             <Input
-              placeholder="Cari transaksi, program, atau peserta..."
+              placeholder={APP_CONFIG.labels.searchPlaceholder}
               className="pl-10 bg-white/70"
             />
           </div>
 
           <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <span>Periode KKN:</span>
+            <span>{APP_CONFIG.labels.systemVersion}:</span>
             <Badge variant="outline" className="font-semibold">
-              Juli - Agustus 2025
+              {APP_CONFIG.appVersion}
             </Badge>
           </div>
         </div>

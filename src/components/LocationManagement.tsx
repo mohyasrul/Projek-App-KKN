@@ -5,8 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus,
@@ -30,7 +42,15 @@ import {
 interface Location {
   id: string;
   name: string;
-  type: "desa" | "balai" | "sekolah" | "puskesmas" | "masjid" | "lapangan" | "kantor" | "lainnya";
+  type:
+    | "desa"
+    | "balai"
+    | "sekolah"
+    | "puskesmas"
+    | "masjid"
+    | "lapangan"
+    | "kantor"
+    | "lainnya";
   address: string;
   village: string;
   district: string;
@@ -64,143 +84,31 @@ interface Activity {
 }
 
 const LocationManagement = () => {
-  // Mock data untuk lokasi
-  const [locations, setLocations] = useState<Location[]>([
-    {
-      id: "1",
-      name: "Balai Desa Makmur",
-      type: "balai",
-      address: "Jl. Raya Desa No. 15",
-      village: "Desa Makmur",
-      district: "Kecamatan Sejahtera",
-      coordinates: {
-        latitude: -6.2088,
-        longitude: 106.8456,
-      },
-      capacity: 150,
-      facilities: ["AC", "Proyektor", "Sound System", "Toilet", "Parkir"],
-      contactPerson: "Pak Hendra (Kepala Desa)",
-      contactPhone: "081234567890",
-      contactEmail: "balaidesa.makmur@gmail.com",
-      availability: "available",
-      operatingHours: {
-        start: "08:00",
-        end: "17:00",
-      },
-      description: "Balai desa yang dilengkapi dengan fasilitas lengkap untuk berbagai kegiatan kemasyarakatan",
-      rating: 4.5,
-      totalActivities: 12,
-      createdAt: "2025-05-01T08:00:00Z",
-      updatedAt: "2025-06-01T10:00:00Z",
-    },
-    {
-      id: "2",
-      name: "SDN Harapan Bangsa",
-      type: "sekolah",
-      address: "Jl. Pendidikan No. 23",
-      village: "Desa Makmur",
-      district: "Kecamatan Sejahtera",
-      capacity: 200,
-      facilities: ["Papan Tulis", "Meja Kursi", "Toilet", "Kantin", "Parkir"],
-      contactPerson: "Ibu Sri (Kepala Sekolah)",
-      contactPhone: "081234567891",
-      contactEmail: "sdn.harapanbangsa@gmail.com",
-      availability: "busy",
-      operatingHours: {
-        start: "07:00",
-        end: "16:00",
-      },
-      description: "Sekolah dasar dengan ruang kelas yang luas, cocok untuk kegiatan pendidikan dan pelatihan",
-      rating: 4.2,
-      totalActivities: 8,
-      createdAt: "2025-05-02T09:00:00Z",
-      updatedAt: "2025-06-05T14:00:00Z",
-    },
-    {
-      id: "3",
-      name: "Puskesmas Sejahtera",
-      type: "puskesmas",
-      address: "Jl. Kesehatan No. 7",
-      village: "Desa Sejahtera",
-      district: "Kecamatan Sejahtera",
-      capacity: 80,
-      facilities: ["Ruang Pertemuan", "AC", "Toilet", "Parkir", "Alat Kesehatan"],
-      contactPerson: "Dr. Andi (Kepala Puskesmas)",
-      contactPhone: "081234567892",
-      contactEmail: "puskesmas.sejahtera@kemkes.go.id",
-      availability: "available",
-      operatingHours: {
-        start: "08:00",
-        end: "15:00",
-      },
-      description: "Puskesmas dengan fasilitas ruang pertemuan untuk kegiatan penyuluhan kesehatan",
-      rating: 4.0,
-      totalActivities: 6,
-      createdAt: "2025-05-03T10:00:00Z",
-      updatedAt: "2025-05-25T16:00:00Z",
-    },
-    {
-      id: "4",
-      name: "Masjid Al-Hidayah",
-      type: "masjid",
-      address: "Jl. Masjid Raya No. 1",
-      village: "Desa Makmur",
-      district: "Kecamatan Sejahtera",
-      capacity: 300,
-      facilities: ["Sound System", "Toilet", "Parkir", "Ruang Serbaguna", "Dapur"],
-      contactPerson: "Pak Ahmad (Takmir Masjid)",
-      contactPhone: "081234567893",
-      availability: "available",
-      operatingHours: {
-        start: "05:00",
-        end: "21:00",
-      },
-      description: "Masjid dengan ruang serbaguna yang sering digunakan untuk kegiatan sosial dan pendidikan",
-      rating: 4.8,
-      totalActivities: 15,
-      createdAt: "2025-05-04T11:00:00Z",
-      updatedAt: "2025-06-02T08:00:00Z",
-    },
-    {
-      id: "5",
-      name: "Lapangan Desa",
-      type: "lapangan",
-      address: "Tengah Desa Makmur",
-      village: "Desa Makmur",
-      district: "Kecamatan Sejahtera",
-      capacity: 500,
-      facilities: ["Lapangan Luas", "Parkir", "Toilet", "Warung"],
-      contactPerson: "Pak Budi (Pengurus RT)",
-      contactPhone: "081234567894",
-      availability: "available",
-      operatingHours: {
-        start: "06:00",
-        end: "18:00",
-      },
-      description: "Lapangan terbuka di tengah desa, cocok untuk kegiatan olahraga dan acara besar",
-      rating: 3.8,
-      totalActivities: 10,
-      createdAt: "2025-05-05T12:00:00Z",
-      updatedAt: "2025-05-30T15:00:00Z",
-    },
-  ]);
+  // State untuk data lokasi
+  const [locations, setLocations] = useState<Location[]>([]);
 
   // Mock data untuk kegiatan yang menggunakan lokasi
-  const mockActivities: Activity[] = [
-    { id: "1", title: "Penyuluhan Kesehatan", date: "2025-06-10", locationId: "1" },
-    { id: "2", title: "Pelatihan Komputer", date: "2025-06-12", locationId: "2" },
-    { id: "3", title: "Gotong Royong", date: "2025-06-15", locationId: "5" },
-  ];
+  const mockActivities: Activity[] = [];
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterAvailability, setFilterAvailability] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
-    const [formData, setFormData] = useState({
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+    null
+  );
+  const [formData, setFormData] = useState({
     name: "",
-    type: "balai" as "desa" | "balai" | "sekolah" | "puskesmas" | "masjid" | "lapangan" | "kantor" | "lainnya",
+    type: "balai" as
+      | "desa"
+      | "balai"
+      | "sekolah"
+      | "puskesmas"
+      | "masjid"
+      | "lapangan"
+      | "kantor"
+      | "lainnya",
     address: "",
     village: "",
     district: "",
@@ -209,7 +117,11 @@ const LocationManagement = () => {
     contactPerson: "",
     contactPhone: "",
     contactEmail: "",
-    availability: "available" as "available" | "busy" | "maintenance" | "unavailable",
+    availability: "available" as
+      | "available"
+      | "busy"
+      | "maintenance"
+      | "unavailable",
     operatingStart: "",
     operatingEnd: "",
     description: "",
@@ -230,44 +142,65 @@ const LocationManagement = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "desa": return "bg-blue-100 text-blue-800";
-      case "balai": return "bg-green-100 text-green-800";
-      case "sekolah": return "bg-yellow-100 text-yellow-800";
-      case "puskesmas": return "bg-red-100 text-red-800";
-      case "masjid": return "bg-purple-100 text-purple-800";
-      case "lapangan": return "bg-orange-100 text-orange-800";
-      case "kantor": return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "desa":
+        return "bg-blue-100 text-blue-800";
+      case "balai":
+        return "bg-green-100 text-green-800";
+      case "sekolah":
+        return "bg-yellow-100 text-yellow-800";
+      case "puskesmas":
+        return "bg-red-100 text-red-800";
+      case "masjid":
+        return "bg-purple-100 text-purple-800";
+      case "lapangan":
+        return "bg-orange-100 text-orange-800";
+      case "kantor":
+        return "bg-gray-100 text-gray-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getAvailabilityColor = (availability: string) => {
     switch (availability) {
-      case "available": return "bg-green-100 text-green-800";
-      case "busy": return "bg-yellow-100 text-yellow-800";
-      case "maintenance": return "bg-orange-100 text-orange-800";
-      case "unavailable": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "available":
+        return "bg-green-100 text-green-800";
+      case "busy":
+        return "bg-yellow-100 text-yellow-800";
+      case "maintenance":
+        return "bg-orange-100 text-orange-800";
+      case "unavailable":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getAvailabilityText = (availability: string) => {
     switch (availability) {
-      case "available": return "Tersedia";
-      case "busy": return "Sedang Digunakan";
-      case "maintenance": return "Maintenance";
-      case "unavailable": return "Tidak Tersedia";
-      default: return availability;
+      case "available":
+        return "Tersedia";
+      case "busy":
+        return "Sedang Digunakan";
+      case "maintenance":
+        return "Maintenance";
+      case "unavailable":
+        return "Tidak Tersedia";
+      default:
+        return availability;
     }
   };
 
   const filteredLocations = locations.filter((location) => {
-    const matchesSearch = location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         location.village.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      location.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      location.village.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || location.type === filterType;
-    const matchesAvailability = filterAvailability === "all" || location.availability === filterAvailability;
-    
+    const matchesAvailability =
+      filterAvailability === "all" ||
+      location.availability === filterAvailability;
+
     return matchesSearch && matchesType && matchesAvailability;
   });
 
@@ -281,12 +214,18 @@ const LocationManagement = () => {
       address: formData.address,
       village: formData.village,
       district: formData.district,
-      coordinates: formData.latitude && formData.longitude ? {
-        latitude: parseFloat(formData.latitude),
-        longitude: parseFloat(formData.longitude),
-      } : undefined,
+      coordinates:
+        formData.latitude && formData.longitude
+          ? {
+              latitude: parseFloat(formData.latitude),
+              longitude: parseFloat(formData.longitude),
+            }
+          : undefined,
       capacity: parseInt(formData.capacity) || 0,
-      facilities: formData.facilities.split(',').map(f => f.trim()).filter(f => f),
+      facilities: formData.facilities
+        .split(",")
+        .map((f) => f.trim())
+        .filter((f) => f),
       contactPerson: formData.contactPerson,
       contactPhone: formData.contactPhone,
       contactEmail: formData.contactEmail,
@@ -319,12 +258,18 @@ const LocationManagement = () => {
             address: formData.address,
             village: formData.village,
             district: formData.district,
-            coordinates: formData.latitude && formData.longitude ? {
-              latitude: parseFloat(formData.latitude),
-              longitude: parseFloat(formData.longitude),
-            } : location.coordinates,
+            coordinates:
+              formData.latitude && formData.longitude
+                ? {
+                    latitude: parseFloat(formData.latitude),
+                    longitude: parseFloat(formData.longitude),
+                  }
+                : location.coordinates,
             capacity: parseInt(formData.capacity) || location.capacity,
-            facilities: formData.facilities.split(',').map(f => f.trim()).filter(f => f),
+            facilities: formData.facilities
+              .split(",")
+              .map((f) => f.trim())
+              .filter((f) => f),
             contactPerson: formData.contactPerson,
             contactPhone: formData.contactPhone,
             contactEmail: formData.contactEmail,
@@ -378,7 +323,7 @@ const LocationManagement = () => {
       village: location.village,
       district: location.district,
       capacity: location.capacity.toString(),
-      facilities: location.facilities.join(', '),
+      facilities: location.facilities.join(", "),
       contactPerson: location.contactPerson,
       contactPhone: location.contactPhone,
       contactEmail: location.contactEmail || "",
@@ -393,15 +338,19 @@ const LocationManagement = () => {
 
   const getLocationStats = () => {
     const total = locations.length;
-    const available = locations.filter(l => l.availability === "available").length;
-    const busy = locations.filter(l => l.availability === "busy").length;
+    const available = locations.filter(
+      (l) => l.availability === "available"
+    ).length;
+    const busy = locations.filter((l) => l.availability === "busy").length;
     const totalCapacity = locations.reduce((sum, l) => sum + l.capacity, 0);
 
     return { total, available, busy, totalCapacity };
   };
 
   const getLocationActivities = (locationId: string) => {
-    return mockActivities.filter(activity => activity.locationId === locationId);
+    return mockActivities.filter(
+      (activity) => activity.locationId === locationId
+    );
   };
 
   const stats = getLocationStats();
@@ -414,8 +363,12 @@ const LocationManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Lokasi</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.total}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Lokasi
+                </p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {stats.total}
+                </p>
               </div>
               <MapPin className="h-8 w-8 text-blue-600" />
             </div>
@@ -427,7 +380,9 @@ const LocationManagement = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Tersedia</p>
-                <p className="text-2xl font-bold text-green-600">{stats.available}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.available}
+                </p>
               </div>
               <Building className="h-8 w-8 text-green-600" />
             </div>
@@ -438,8 +393,12 @@ const LocationManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Sedang Digunakan</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.busy}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Sedang Digunakan
+                </p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {stats.busy}
+                </p>
               </div>
               <Clock className="h-8 w-8 text-yellow-600" />
             </div>
@@ -450,8 +409,12 @@ const LocationManagement = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Kapasitas</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.totalCapacity}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Kapasitas
+                </p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {stats.totalCapacity}
+                </p>
               </div>
               <Users className="h-8 w-8 text-purple-600" />
             </div>
@@ -473,7 +436,7 @@ const LocationManagement = () => {
                   className="pl-10"
                 />
               </div>
-              
+
               <div className="flex gap-2">
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger className="w-[140px]">
@@ -481,13 +444,18 @@ const LocationManagement = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Semua Tipe</SelectItem>
-                    {locationTypes.map(type => (
-                      <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                    {locationTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
 
-                <Select value={filterAvailability} onValueChange={setFilterAvailability}>
+                <Select
+                  value={filterAvailability}
+                  onValueChange={setFilterAvailability}
+                >
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Ketersediaan" />
                   </SelectTrigger>
@@ -504,7 +472,12 @@ const LocationManagement = () => {
 
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button onClick={() => { resetForm(); setIsAddDialogOpen(true); }}>
+                <Button
+                  onClick={() => {
+                    resetForm();
+                    setIsAddDialogOpen(true);
+                  }}
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Tambah Lokasi
                 </Button>
@@ -515,7 +488,7 @@ const LocationManagement = () => {
                     {editingLocation ? "Edit Lokasi" : "Tambah Lokasi Baru"}
                   </DialogTitle>
                 </DialogHeader>
-                
+
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -523,20 +496,29 @@ const LocationManagement = () => {
                       <Input
                         id="name"
                         value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, name: e.target.value })
+                        }
                         placeholder="Nama lokasi"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="type">Tipe Lokasi</Label>
-                      <Select value={formData.type} onValueChange={(value: any) => setFormData({ ...formData, type: value })}>
+                      <Select
+                        value={formData.type}
+                        onValueChange={(value: any) =>
+                          setFormData({ ...formData, type: value })
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Pilih tipe" />
                         </SelectTrigger>
                         <SelectContent>
-                          {locationTypes.map(type => (
-                            <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+                          {locationTypes.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -548,7 +530,9 @@ const LocationManagement = () => {
                     <Input
                       id="address"
                       value={formData.address}
-                      onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, address: e.target.value })
+                      }
                       placeholder="Alamat lengkap"
                     />
                   </div>
@@ -559,7 +543,9 @@ const LocationManagement = () => {
                       <Input
                         id="village"
                         value={formData.village}
-                        onChange={(e) => setFormData({ ...formData, village: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, village: e.target.value })
+                        }
                         placeholder="Nama desa"
                       />
                     </div>
@@ -569,7 +555,9 @@ const LocationManagement = () => {
                       <Input
                         id="district"
                         value={formData.district}
-                        onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, district: e.target.value })
+                        }
                         placeholder="Nama kecamatan"
                       />
                     </div>
@@ -582,22 +570,33 @@ const LocationManagement = () => {
                         id="capacity"
                         type="number"
                         value={formData.capacity}
-                        onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, capacity: e.target.value })
+                        }
                         placeholder="Jumlah orang"
                       />
                     </div>
 
                     <div>
                       <Label htmlFor="availability">Status</Label>
-                      <Select value={formData.availability} onValueChange={(value: any) => setFormData({ ...formData, availability: value })}>
+                      <Select
+                        value={formData.availability}
+                        onValueChange={(value: any) =>
+                          setFormData({ ...formData, availability: value })
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="available">Tersedia</SelectItem>
                           <SelectItem value="busy">Sedang Digunakan</SelectItem>
-                          <SelectItem value="maintenance">Maintenance</SelectItem>
-                          <SelectItem value="unavailable">Tidak Tersedia</SelectItem>
+                          <SelectItem value="maintenance">
+                            Maintenance
+                          </SelectItem>
+                          <SelectItem value="unavailable">
+                            Tidak Tersedia
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -610,7 +609,12 @@ const LocationManagement = () => {
                         id="operatingStart"
                         type="time"
                         value={formData.operatingStart}
-                        onChange={(e) => setFormData({ ...formData, operatingStart: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            operatingStart: e.target.value,
+                          })
+                        }
                       />
                     </div>
 
@@ -620,7 +624,12 @@ const LocationManagement = () => {
                         id="operatingEnd"
                         type="time"
                         value={formData.operatingEnd}
-                        onChange={(e) => setFormData({ ...formData, operatingEnd: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            operatingEnd: e.target.value,
+                          })
+                        }
                       />
                     </div>
                   </div>
@@ -630,7 +639,9 @@ const LocationManagement = () => {
                     <Input
                       id="facilities"
                       value={formData.facilities}
-                      onChange={(e) => setFormData({ ...formData, facilities: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, facilities: e.target.value })
+                      }
                       placeholder="Pisahkan dengan koma (misal: AC, Proyektor, Toilet)"
                     />
                   </div>
@@ -641,7 +652,12 @@ const LocationManagement = () => {
                       <Input
                         id="contactPerson"
                         value={formData.contactPerson}
-                        onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactPerson: e.target.value,
+                          })
+                        }
                         placeholder="Nama penanggung jawab"
                       />
                     </div>
@@ -651,7 +667,12 @@ const LocationManagement = () => {
                       <Input
                         id="contactPhone"
                         value={formData.contactPhone}
-                        onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactPhone: e.target.value,
+                          })
+                        }
                         placeholder="08xxxxxxxxxx"
                       />
                     </div>
@@ -662,7 +683,12 @@ const LocationManagement = () => {
                         id="contactEmail"
                         type="email"
                         value={formData.contactEmail}
-                        onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            contactEmail: e.target.value,
+                          })
+                        }
                         placeholder="email@domain.com"
                       />
                     </div>
@@ -674,7 +700,9 @@ const LocationManagement = () => {
                       <Input
                         id="latitude"
                         value={formData.latitude}
-                        onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, latitude: e.target.value })
+                        }
                         placeholder="-6.2088"
                       />
                     </div>
@@ -684,7 +712,12 @@ const LocationManagement = () => {
                       <Input
                         id="longitude"
                         value={formData.longitude}
-                        onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            longitude: e.target.value,
+                          })
+                        }
                         placeholder="106.8456"
                       />
                     </div>
@@ -695,7 +728,12 @@ const LocationManagement = () => {
                     <Textarea
                       id="description"
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
+                      }
                       placeholder="Deskripsi lokasi dan keterangan tambahan"
                       rows={3}
                     />
@@ -713,7 +751,9 @@ const LocationManagement = () => {
                       Batal
                     </Button>
                     <Button
-                      onClick={editingLocation ? handleEditLocation : handleAddLocation}
+                      onClick={
+                        editingLocation ? handleEditLocation : handleAddLocation
+                      }
                       disabled={!formData.name || !formData.address}
                     >
                       {editingLocation ? "Simpan Perubahan" : "Tambah Lokasi"}
@@ -738,17 +778,31 @@ const LocationManagement = () => {
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">
                         {location.name}
                       </h3>
-                      <p className="text-sm text-gray-600 mb-2">{location.address}</p>
-                      <p className="text-sm text-gray-500 mb-3">{location.village}, {location.district}</p>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {location.address}
+                      </p>
+                      <p className="text-sm text-gray-500 mb-3">
+                        {location.village}, {location.district}
+                      </p>
                       <div className="flex flex-wrap gap-2 mb-3">
                         <Badge className={getTypeColor(location.type)}>
-                          {locationTypes.find(t => t.value === location.type)?.label}
+                          {
+                            locationTypes.find((t) => t.value === location.type)
+                              ?.label
+                          }
                         </Badge>
-                        <Badge className={getAvailabilityColor(location.availability)}>
+                        <Badge
+                          className={getAvailabilityColor(
+                            location.availability
+                          )}
+                        >
                           {getAvailabilityText(location.availability)}
                         </Badge>
                         {location.rating > 0 && (
-                          <Badge variant="outline" className="flex items-center gap-1">
+                          <Badge
+                            variant="outline"
+                            className="flex items-center gap-1"
+                          >
                             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
                             {location.rating}
                           </Badge>
@@ -770,7 +824,10 @@ const LocationManagement = () => {
                       <Clock className="h-4 w-4 mr-2" />
                       <div>
                         <p className="font-medium">Jam Operasional</p>
-                        <p>{location.operatingHours.start} - {location.operatingHours.end}</p>
+                        <p>
+                          {location.operatingHours.start} -{" "}
+                          {location.operatingHours.end}
+                        </p>
                       </div>
                     </div>
 
@@ -794,15 +851,26 @@ const LocationManagement = () => {
 
                   {location.facilities.length > 0 && (
                     <div className="mt-3">
-                      <p className="text-sm font-medium text-gray-700 mb-1">Fasilitas:</p>
+                      <p className="text-sm font-medium text-gray-700 mb-1">
+                        Fasilitas:
+                      </p>
                       <div className="flex flex-wrap gap-1">
-                        {location.facilities.slice(0, 5).map((facility, index) => (
-                          <Badge key={index} variant="outline" className="text-xs">
-                            {facility}
-                          </Badge>
-                        ))}
+                        {location.facilities
+                          .slice(0, 5)
+                          .map((facility, index) => (
+                            <Badge
+                              key={index}
+                              variant="outline"
+                              className="text-xs"
+                            >
+                              {facility}
+                            </Badge>
+                          ))}
                         {location.facilities.length > 5 && (
-                          <Badge variant="outline" className="text-xs text-gray-400">
+                          <Badge
+                            variant="outline"
+                            className="text-xs text-gray-400"
+                          >
                             +{location.facilities.length - 5} lainnya
                           </Badge>
                         )}
@@ -812,7 +880,9 @@ const LocationManagement = () => {
 
                   {location.description && (
                     <div className="mt-3">
-                      <p className="text-sm text-gray-600">{location.description}</p>
+                      <p className="text-sm text-gray-600">
+                        {location.description}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -838,54 +908,115 @@ const LocationManagement = () => {
                         <Tabs defaultValue="overview" className="space-y-4">
                           <TabsList>
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="facilities">Fasilitas</TabsTrigger>
+                            <TabsTrigger value="facilities">
+                              Fasilitas
+                            </TabsTrigger>
                             <TabsTrigger value="contact">Kontak</TabsTrigger>
-                            <TabsTrigger value="activities">Kegiatan</TabsTrigger>
+                            <TabsTrigger value="activities">
+                              Kegiatan
+                            </TabsTrigger>
                           </TabsList>
 
                           <TabsContent value="overview" className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                <h4 className="font-semibold mb-2">Informasi Lokasi</h4>
+                                <h4 className="font-semibold mb-2">
+                                  Informasi Lokasi
+                                </h4>
                                 <div className="space-y-2 text-sm">
-                                  <div><span className="font-medium">Tipe:</span> {locationTypes.find(t => t.value === selectedLocation.type)?.label}</div>
-                                  <div><span className="font-medium">Status:</span> {getAvailabilityText(selectedLocation.availability)}</div>
-                                  <div><span className="font-medium">Kapasitas:</span> {selectedLocation.capacity} orang</div>
-                                  <div><span className="font-medium">Rating:</span> {selectedLocation.rating}/5</div>
+                                  <div>
+                                    <span className="font-medium">Tipe:</span>{" "}
+                                    {
+                                      locationTypes.find(
+                                        (t) => t.value === selectedLocation.type
+                                      )?.label
+                                    }
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Status:</span>{" "}
+                                    {getAvailabilityText(
+                                      selectedLocation.availability
+                                    )}
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">
+                                      Kapasitas:
+                                    </span>{" "}
+                                    {selectedLocation.capacity} orang
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Rating:</span>{" "}
+                                    {selectedLocation.rating}/5
+                                  </div>
                                 </div>
                               </div>
                               <div>
-                                <h4 className="font-semibold mb-2">Lokasi & Alamat</h4>
+                                <h4 className="font-semibold mb-2">
+                                  Lokasi & Alamat
+                                </h4>
                                 <div className="space-y-2 text-sm">
-                                  <div><span className="font-medium">Alamat:</span> {selectedLocation.address}</div>
-                                  <div><span className="font-medium">Desa:</span> {selectedLocation.village}</div>
-                                  <div><span className="font-medium">Kecamatan:</span> {selectedLocation.district}</div>
+                                  <div>
+                                    <span className="font-medium">Alamat:</span>{" "}
+                                    {selectedLocation.address}
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">Desa:</span>{" "}
+                                    {selectedLocation.village}
+                                  </div>
+                                  <div>
+                                    <span className="font-medium">
+                                      Kecamatan:
+                                    </span>{" "}
+                                    {selectedLocation.district}
+                                  </div>
                                   {selectedLocation.coordinates && (
-                                    <div><span className="font-medium">Koordinat:</span> {selectedLocation.coordinates.latitude}, {selectedLocation.coordinates.longitude}</div>
+                                    <div>
+                                      <span className="font-medium">
+                                        Koordinat:
+                                      </span>{" "}
+                                      {selectedLocation.coordinates.latitude},{" "}
+                                      {selectedLocation.coordinates.longitude}
+                                    </div>
                                   )}
                                 </div>
                               </div>
                             </div>
                             <div>
-                              <h4 className="font-semibold mb-2">Jam Operasional</h4>
-                              <p className="text-sm text-gray-600">{selectedLocation.operatingHours.start} - {selectedLocation.operatingHours.end}</p>
+                              <h4 className="font-semibold mb-2">
+                                Jam Operasional
+                              </h4>
+                              <p className="text-sm text-gray-600">
+                                {selectedLocation.operatingHours.start} -{" "}
+                                {selectedLocation.operatingHours.end}
+                              </p>
                             </div>
                             <div>
                               <h4 className="font-semibold mb-2">Deskripsi</h4>
-                              <p className="text-sm text-gray-600">{selectedLocation.description}</p>
+                              <p className="text-sm text-gray-600">
+                                {selectedLocation.description}
+                              </p>
                             </div>
                           </TabsContent>
 
                           <TabsContent value="facilities">
                             <div>
-                              <h4 className="font-semibold mb-4">Fasilitas yang Tersedia</h4>
+                              <h4 className="font-semibold mb-4">
+                                Fasilitas yang Tersedia
+                              </h4>
                               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                {selectedLocation.facilities.map((facility, index) => (
-                                  <div key={index} className="flex items-center p-2 border rounded-lg">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                                    <span className="text-sm">{facility}</span>
-                                  </div>
-                                ))}
+                                {selectedLocation.facilities.map(
+                                  (facility, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-center p-2 border rounded-lg"
+                                    >
+                                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                                      <span className="text-sm">
+                                        {facility}
+                                      </span>
+                                    </div>
+                                  )
+                                )}
                               </div>
                             </div>
                           </TabsContent>
@@ -897,14 +1028,18 @@ const LocationManagement = () => {
                                   <Users className="h-5 w-5 text-blue-600 mr-3 mt-1" />
                                   <div>
                                     <p className="font-medium">Narahubung</p>
-                                    <p className="text-sm text-gray-600">{selectedLocation.contactPerson}</p>
+                                    <p className="text-sm text-gray-600">
+                                      {selectedLocation.contactPerson}
+                                    </p>
                                   </div>
                                 </div>
                                 <div className="flex items-start p-4 border rounded-lg">
                                   <Phone className="h-5 w-5 text-green-600 mr-3 mt-1" />
                                   <div>
                                     <p className="font-medium">Telepon</p>
-                                    <p className="text-sm text-gray-600">{selectedLocation.contactPhone}</p>
+                                    <p className="text-sm text-gray-600">
+                                      {selectedLocation.contactPhone}
+                                    </p>
                                   </div>
                                 </div>
                                 {selectedLocation.contactEmail && (
@@ -912,7 +1047,9 @@ const LocationManagement = () => {
                                     <Mail className="h-5 w-5 text-purple-600 mr-3 mt-1" />
                                     <div>
                                       <p className="font-medium">Email</p>
-                                      <p className="text-sm text-gray-600">{selectedLocation.contactEmail}</p>
+                                      <p className="text-sm text-gray-600">
+                                        {selectedLocation.contactEmail}
+                                      </p>
                                     </div>
                                   </div>
                                 )}
@@ -920,9 +1057,12 @@ const LocationManagement = () => {
                                   <div className="flex items-start p-4 border rounded-lg">
                                     <Navigation className="h-5 w-5 text-red-600 mr-3 mt-1" />
                                     <div>
-                                      <p className="font-medium">Koordinat GPS</p>
+                                      <p className="font-medium">
+                                        Koordinat GPS
+                                      </p>
                                       <p className="text-sm text-gray-600">
-                                        {selectedLocation.coordinates.latitude}, {selectedLocation.coordinates.longitude}
+                                        {selectedLocation.coordinates.latitude},{" "}
+                                        {selectedLocation.coordinates.longitude}
                                       </p>
                                     </div>
                                   </div>
@@ -933,14 +1073,33 @@ const LocationManagement = () => {
 
                           <TabsContent value="activities">
                             <div>
-                              <h4 className="font-semibold mb-4">Kegiatan di Lokasi Ini</h4>
-                              {getLocationActivities(selectedLocation.id).length > 0 ? (
+                              <h4 className="font-semibold mb-4">
+                                Kegiatan di Lokasi Ini
+                              </h4>
+                              {getLocationActivities(selectedLocation.id)
+                                .length > 0 ? (
                                 <div className="space-y-2">
-                                  {getLocationActivities(selectedLocation.id).map((activity) => (
-                                    <div key={activity.id} className="flex items-center justify-between p-3 border rounded-lg">
+                                  {getLocationActivities(
+                                    selectedLocation.id
+                                  ).map((activity) => (
+                                    <div
+                                      key={activity.id}
+                                      className="flex items-center justify-between p-3 border rounded-lg"
+                                    >
                                       <div>
-                                        <p className="font-medium">{activity.title}</p>
-                                        <p className="text-sm text-gray-600">{new Date(activity.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                                        <p className="font-medium">
+                                          {activity.title}
+                                        </p>
+                                        <p className="text-sm text-gray-600">
+                                          {new Date(
+                                            activity.date
+                                          ).toLocaleDateString("id-ID", {
+                                            weekday: "long",
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                          })}
+                                        </p>
                                       </div>
                                       <Badge variant="outline">Terjadwal</Badge>
                                     </div>
@@ -962,7 +1121,14 @@ const LocationManagement = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => window.open(`https://maps.google.com/?q=${location.coordinates!.latitude},${location.coordinates!.longitude}`, '_blank')}
+                      onClick={() =>
+                        window.open(
+                          `https://maps.google.com/?q=${
+                            location.coordinates!.latitude
+                          },${location.coordinates!.longitude}`,
+                          "_blank"
+                        )
+                      }
                       className="flex-1 lg:flex-none"
                     >
                       <Map className="h-4 w-4 mr-2" />
@@ -1006,16 +1172,20 @@ const LocationManagement = () => {
                 Tidak ada lokasi ditemukan
               </h3>
               <p className="text-gray-500 mb-4">
-                {searchTerm || filterType !== "all" || filterAvailability !== "all"
+                {searchTerm ||
+                filterType !== "all" ||
+                filterAvailability !== "all"
                   ? "Coba ubah filter atau kata kunci pencarian"
                   : "Belum ada lokasi yang terdaftar"}
               </p>
-              {!searchTerm && filterType === "all" && filterAvailability === "all" && (
-                <Button onClick={() => setIsAddDialogOpen(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Tambah Lokasi Pertama
-                </Button>
-              )}
+              {!searchTerm &&
+                filterType === "all" &&
+                filterAvailability === "all" && (
+                  <Button onClick={() => setIsAddDialogOpen(true)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Tambah Lokasi Pertama
+                  </Button>
+                )}
             </CardContent>
           </Card>
         )}

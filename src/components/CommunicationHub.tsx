@@ -5,8 +5,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -30,6 +42,7 @@ import {
   Paperclip,
   Download,
 } from "lucide-react";
+import { useData, type Student } from "@/contexts/DataContext";
 
 interface Message {
   id: string;
@@ -67,113 +80,110 @@ interface User {
 }
 
 const CommunicationHub = () => {
-  // Mock data untuk pesan
-  const [messages, setMessages] = useState<Message[]>([
+  const { students } = useData();
+
+  // Sample messages initialization
+  const createSampleMessages = (): Message[] => [
     {
-      id: "1",
+      id: "msg-1",
       type: "announcement",
-      title: "Perubahan Jadwal Kegiatan Penyuluhan",
-      content: "Kegiatan penyuluhan kesehatan yang semula dijadwalkan tanggal 10 Juni 2025 dipindahkan ke tanggal 12 Juni 2025 pukul 09:00 WIB. Mohon semua peserta KKN untuk menyesuaikan jadwal.",
+      title: "Rapat Koordinasi Mingguan",
+      content:
+        "Assalamu'alaikum teman-teman. Besok hari Senin tanggal 22 Januari 2024 kita akan ada rapat koordinasi mingguan jam 19:00 WIB via Google Meet. Agenda: evaluasi kegiatan minggu lalu dan perencanaan minggu depan. Link meeting akan saya share 30 menit sebelum rapat. Mohon kehadiran semua anggota. Terima kasih 🙏",
       sender: {
-        id: "1",
-        name: "Ahmad Fadli",
+        id: students[0]?.id || "user-1",
+        name: students[0]?.name || "Ahmad Rizki Pratama",
         role: "coordinator",
-        avatar: "/api/placeholder/32/32"
+        avatar: students[0]?.avatar,
       },
       recipients: ["all"],
-      timestamp: "2025-06-06T10:30:00Z",
+      attachments: [],
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
       isRead: false,
       isPinned: true,
       priority: "high",
-      readBy: ["2", "3", "4"],
+      replies: [],
+      readBy: [students[0]?.id || "user-1"],
     },
     {
-      id: "2",
-      type: "urgent",
-      title: "URGENT: Perlu Bantuan Segera",
-      content: "Butuh bantuan segera untuk mengevakuasi warga di daerah banjir. Semua peserta KKN yang tersedia dimohon segera datang ke Posko.",
-      sender: {
-        id: "2",
-        name: "Siti Nurhaliza",
-        role: "secretary",
-      },
-      recipients: ["all"],
-      timestamp: "2025-06-06T08:15:00Z",
-      isRead: true,
-      isPinned: true,
-      priority: "urgent",
-      readBy: ["1", "3", "4", "5"],
-    },
-    {
-      id: "3",
+      id: "msg-2",
       type: "chat",
-      content: "Halo teman-teman, ada yang punya kontak tukang listrik? Lampu di posko mati nih.",
+      content:
+        "Hai semua! Ada yang tahu dimana lokasi rapat besok? Di balai desa atau di sekolah ya?",
       sender: {
-        id: "3",
-        name: "Budi Santoso",
-        role: "treasurer",
+        id: students[3]?.id || "user-4",
+        name: students[3]?.name || "Nurul Aisyah Putri",
+        role: "member",
+        avatar: students[3]?.avatar,
       },
       recipients: ["all"],
-      timestamp: "2025-06-06T14:20:00Z",
-      isRead: false,
+      attachments: [],
+      timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
+      isRead: true,
       isPinned: false,
       priority: "normal",
-      readBy: ["1", "2"],
       replies: [
         {
-          id: "3-1",
+          id: "reply-1",
           type: "chat",
-          content: "Saya ada kontak Pak Joko, nanti saya share ya",
+          content: "Di balai desa ya Nur, seperti biasa. Jam 19:00 WIB.",
           sender: {
-            id: "4",
-            name: "Dewi Kartika",
-            role: "member",
+            id: students[1]?.id || "user-2",
+            name: students[1]?.name || "Sari Dewi Lestari",
+            role: "vice_coordinator",
+            avatar: students[1]?.avatar,
           },
           recipients: ["all"],
-          timestamp: "2025-06-06T14:25:00Z",
-          isRead: false,
+          timestamp: new Date(Date.now() - 45 * 60 * 1000).toISOString(), // 45 minutes ago
+          isRead: true,
           isPinned: false,
           priority: "normal",
-          readBy: ["1", "2", "3"],
-        }
-      ]
+          readBy: [students[1]?.id || "user-2", students[3]?.id || "user-4"],
+        },
+      ],
+      readBy: [
+        students[0]?.id || "user-1",
+        students[1]?.id || "user-2",
+        students[3]?.id || "user-4",
+      ],
     },
     {
-      id: "4",
-      type: "announcement",
-      title: "Laporan Mingguan",
-      content: "Reminder untuk semua peserta KKN, laporan mingguan harus dikumpulkan paling lambat hari Jumat jam 17:00 WIB.",
+      id: "msg-3",
+      type: "urgent",
+      title: "URGENT: Perubahan Jadwal Kegiatan",
+      content:
+        "PENTING! Ada perubahan jadwal untuk kegiatan sosialisasi aplikasi desa besok. Karena ada acara mendadak di balai desa, kegiatan dipindah ke hari Rabu jam 14:00 WIB di SD Negeri 1 Makmur. Mohon segera konfirmasi kehadiran. Terima kasih!",
       sender: {
-        id: "1",
-        name: "Ahmad Fadli",
+        id: students[0]?.id || "user-1",
+        name: students[0]?.name || "Ahmad Rizki Pratama",
         role: "coordinator",
+        avatar: students[0]?.avatar,
       },
       recipients: ["all"],
-      attachments: [
-        {
-          name: "Template_Laporan_Mingguan.docx",
-          type: "document",
-          size: 245760,
-          url: "/files/template.docx"
-        }
-      ],
-      timestamp: "2025-06-05T16:00:00Z",
-      isRead: true,
-      isPinned: false,
-      priority: "normal",
-      readBy: ["2", "3", "4", "5", "6"],
+      attachments: [],
+      timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+      isRead: false,
+      isPinned: true,
+      priority: "urgent",
+      replies: [],
+      readBy: [students[0]?.id || "user-1"],
     },
-  ]);
-
-  // Mock data untuk users
-  const mockUsers: User[] = [
-    { id: "1", name: "Ahmad Fadli", role: "coordinator", isOnline: true, lastSeen: "2025-06-06T15:30:00Z" },
-    { id: "2", name: "Siti Nurhaliza", role: "secretary", isOnline: true, lastSeen: "2025-06-06T15:25:00Z" },
-    { id: "3", name: "Budi Santoso", role: "treasurer", isOnline: false, lastSeen: "2025-06-06T14:20:00Z" },
-    { id: "4", name: "Dewi Kartika", role: "member", isOnline: true, lastSeen: "2025-06-06T15:30:00Z" },
-    { id: "5", name: "Andi Wijaya", role: "member", isOnline: false, lastSeen: "2025-06-06T12:00:00Z" },
-    { id: "6", name: "Maya Sari", role: "member", isOnline: true, lastSeen: "2025-06-06T15:28:00Z" },
   ];
+
+  // State untuk data pesan
+  const [messages, setMessages] = useState<Message[]>(() =>
+    createSampleMessages()
+  );
+
+  // Convert students to users format for communication
+  const users: User[] = students.map((student) => ({
+    id: student.id,
+    name: student.name,
+    role: student.position || "member",
+    avatar: student.avatar,
+    isOnline: Math.random() > 0.5, // Mock online status - in real app this would come from actual presence data
+    lastSeen: new Date(Date.now() - Math.random() * 3600000).toISOString(), // Random last seen within last hour
+  }));
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
@@ -181,7 +191,7 @@ const CommunicationHub = () => {
   const [isComposeDialogOpen, setIsComposeDialogOpen] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [replyContent, setReplyContent] = useState("");
-    const [composeData, setComposeData] = useState({
+  const [composeData, setComposeData] = useState({
     type: "chat" as "chat" | "announcement" | "urgent",
     title: "",
     content: "",
@@ -193,39 +203,55 @@ const CommunicationHub = () => {
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "urgent": return "bg-red-100 text-red-800";
-      case "announcement": return "bg-blue-100 text-blue-800";
-      case "chat": return "bg-green-100 text-green-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "urgent":
+        return "bg-red-100 text-red-800";
+      case "announcement":
+        return "bg-blue-100 text-blue-800";
+      case "chat":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case "urgent": return <AlertCircle className="h-4 w-4" />;
-      case "announcement": return <Megaphone className="h-4 w-4" />;
-      case "chat": return <MessageSquare className="h-4 w-4" />;
-      default: return <MessageSquare className="h-4 w-4" />;
+      case "urgent":
+        return <AlertCircle className="h-4 w-4" />;
+      case "announcement":
+        return <Megaphone className="h-4 w-4" />;
+      case "chat":
+        return <MessageSquare className="h-4 w-4" />;
+      default:
+        return <MessageSquare className="h-4 w-4" />;
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "urgent": return "bg-red-500";
-      case "high": return "bg-orange-500";
-      case "normal": return "bg-blue-500";
-      case "low": return "bg-gray-500";
-      default: return "bg-gray-500";
+      case "urgent":
+        return "bg-red-500";
+      case "high":
+        return "bg-orange-500";
+      case "normal":
+        return "bg-blue-500";
+      case "low":
+        return "bg-gray-500";
+      default:
+        return "bg-gray-500";
     }
   };
 
   const filteredMessages = messages.filter((message) => {
-    const matchesSearch = message.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (message.title && message.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                         message.sender.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      message.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (message.title &&
+        message.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      message.sender.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = filterType === "all" || message.type === filterType;
-    const matchesPriority = filterPriority === "all" || message.priority === filterPriority;
-    
+    const matchesPriority =
+      filterPriority === "all" || message.priority === filterPriority;
+
     return matchesSearch && matchesType && matchesPriority;
   });
 
@@ -281,36 +307,48 @@ const CommunicationHub = () => {
       readBy: [],
     };
 
-    setMessages(messages.map(message => 
-      message.id === messageId 
-        ? { ...message, replies: [...(message.replies || []), newReply] }
-        : message
-    ));
+    setMessages(
+      messages.map((message) =>
+        message.id === messageId
+          ? { ...message, replies: [...(message.replies || []), newReply] }
+          : message
+      )
+    );
     setReplyContent("");
   };
 
   const togglePin = (messageId: string) => {
-    setMessages(messages.map(message =>
-      message.id === messageId
-        ? { ...message, isPinned: !message.isPinned }
-        : message
-    ));
+    setMessages(
+      messages.map((message) =>
+        message.id === messageId
+          ? { ...message, isPinned: !message.isPinned }
+          : message
+      )
+    );
   };
 
   const markAsRead = (messageId: string) => {
-    setMessages(messages.map(message =>
-      message.id === messageId
-        ? { ...message, isRead: true, readBy: [...message.readBy, currentUserId] }
-        : message
-    ));
+    setMessages(
+      messages.map((message) =>
+        message.id === messageId
+          ? {
+              ...message,
+              isRead: true,
+              readBy: [...message.readBy, currentUserId],
+            }
+          : message
+      )
+    );
   };
 
   const getUnreadCount = () => {
-    return messages.filter(message => !message.isRead && message.sender.id !== currentUserId).length;
+    return messages.filter(
+      (message) => !message.isRead && message.sender.id !== currentUserId
+    ).length;
   };
 
   const getOnlineUsers = () => {
-    return mockUsers.filter(user => user.isOnline);
+    return users.filter((user) => user.isOnline);
   };
 
   const formatTime = (timestamp: string) => {
@@ -324,16 +362,20 @@ const CommunicationHub = () => {
     } else if (diffInHours < 24) {
       return `${Math.floor(diffInHours)} jam yang lalu`;
     } else {
-      return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+      return date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
     }
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
@@ -345,7 +387,9 @@ const CommunicationHub = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Pesan</p>
-                <p className="text-2xl font-bold text-blue-600">{messages.length}</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {messages.length}
+                </p>
               </div>
               <MessageSquare className="h-8 w-8 text-blue-600" />
             </div>
@@ -356,8 +400,12 @@ const CommunicationHub = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Belum Dibaca</p>
-                <p className="text-2xl font-bold text-red-600">{getUnreadCount()}</p>
+                <p className="text-sm font-medium text-gray-600">
+                  Belum Dibaca
+                </p>
+                <p className="text-2xl font-bold text-red-600">
+                  {getUnreadCount()}
+                </p>
               </div>
               <Bell className="h-8 w-8 text-red-600" />
             </div>
@@ -370,7 +418,7 @@ const CommunicationHub = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Dipinkan</p>
                 <p className="text-2xl font-bold text-yellow-600">
-                  {messages.filter(m => m.isPinned).length}
+                  {messages.filter((m) => m.isPinned).length}
                 </p>
               </div>
               <Pin className="h-8 w-8 text-yellow-600" />
@@ -383,7 +431,9 @@ const CommunicationHub = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Online</p>
-                <p className="text-2xl font-bold text-green-600">{getOnlineUsers().length}</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {getOnlineUsers().length}
+                </p>
               </div>
               <Users className="h-8 w-8 text-green-600" />
             </div>
@@ -412,30 +462,48 @@ const CommunicationHub = () => {
                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {user.name}
+                    </p>
+                    <p className="text-xs text-gray-500 capitalize">
+                      {user.role}
+                    </p>
                   </div>
                 </div>
               ))}
-              
-              {mockUsers.filter(user => !user.isOnline).length > 0 && (
+
+              {users.filter((user) => !user.isOnline).length > 0 && (
                 <>
                   <div className="border-t pt-3 mt-3">
-                    <p className="text-sm font-medium text-gray-500 mb-2">Offline</p>
-                    {mockUsers.filter(user => !user.isOnline).map((user) => (
-                      <div key={user.id} className="flex items-center gap-3 mb-2">
-                        <div className="relative">
-                          <Avatar className="h-8 w-8 opacity-60">
-                            <AvatarImage src={user.avatar} />
-                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
+                    {" "}
+                    <p className="text-sm font-medium text-gray-500 mb-2">
+                      Offline
+                    </p>
+                    {users
+                      .filter((user) => !user.isOnline)
+                      .map((user) => (
+                        <div
+                          key={user.id}
+                          className="flex items-center gap-3 mb-2"
+                        >
+                          <div className="relative">
+                            <Avatar className="h-8 w-8 opacity-60">
+                              <AvatarImage src={user.avatar} />
+                              <AvatarFallback>
+                                {user.name.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-600 truncate">
+                              {user.name}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {formatTime(user.lastSeen)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-600 truncate">{user.name}</p>
-                          <p className="text-xs text-gray-400">{formatTime(user.lastSeen)}</p>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </>
               )}
@@ -459,7 +527,7 @@ const CommunicationHub = () => {
                       className="pl-10"
                     />
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <Select value={filterType} onValueChange={setFilterType}>
                       <SelectTrigger className="w-[140px]">
@@ -473,7 +541,10 @@ const CommunicationHub = () => {
                       </SelectContent>
                     </Select>
 
-                    <Select value={filterPriority} onValueChange={setFilterPriority}>
+                    <Select
+                      value={filterPriority}
+                      onValueChange={setFilterPriority}
+                    >
                       <SelectTrigger className="w-[140px]">
                         <SelectValue placeholder="Prioritas" />
                       </SelectTrigger>
@@ -488,7 +559,10 @@ const CommunicationHub = () => {
                   </div>
                 </div>
 
-                <Dialog open={isComposeDialogOpen} onOpenChange={setIsComposeDialogOpen}>
+                <Dialog
+                  open={isComposeDialogOpen}
+                  onOpenChange={setIsComposeDialogOpen}
+                >
                   <DialogTrigger asChild>
                     <Button>
                       <Plus className="h-4 w-4 mr-2" />
@@ -499,18 +573,25 @@ const CommunicationHub = () => {
                     <DialogHeader>
                       <DialogTitle>Tulis Pesan Baru</DialogTitle>
                     </DialogHeader>
-                    
+
                     <div className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <Label htmlFor="messageType">Tipe Pesan</Label>
-                          <Select value={composeData.type} onValueChange={(value: any) => setComposeData({ ...composeData, type: value })}>
+                          <Select
+                            value={composeData.type}
+                            onValueChange={(value: any) =>
+                              setComposeData({ ...composeData, type: value })
+                            }
+                          >
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="chat">Chat</SelectItem>
-                              <SelectItem value="announcement">Pengumuman</SelectItem>
+                              <SelectItem value="announcement">
+                                Pengumuman
+                              </SelectItem>
                               <SelectItem value="urgent">Urgent</SelectItem>
                             </SelectContent>
                           </Select>
@@ -518,7 +599,15 @@ const CommunicationHub = () => {
 
                         <div>
                           <Label htmlFor="priority">Prioritas</Label>
-                          <Select value={composeData.priority} onValueChange={(value: any) => setComposeData({ ...composeData, priority: value })}>
+                          <Select
+                            value={composeData.priority}
+                            onValueChange={(value: any) =>
+                              setComposeData({
+                                ...composeData,
+                                priority: value,
+                              })
+                            }
+                          >
                             <SelectTrigger>
                               <SelectValue />
                             </SelectTrigger>
@@ -532,13 +621,19 @@ const CommunicationHub = () => {
                         </div>
                       </div>
 
-                      {(composeData.type === "announcement" || composeData.type === "urgent") && (
+                      {(composeData.type === "announcement" ||
+                        composeData.type === "urgent") && (
                         <div>
                           <Label htmlFor="title">Judul</Label>
                           <Input
                             id="title"
                             value={composeData.title}
-                            onChange={(e) => setComposeData({ ...composeData, title: e.target.value })}
+                            onChange={(e) =>
+                              setComposeData({
+                                ...composeData,
+                                title: e.target.value,
+                              })
+                            }
                             placeholder="Judul pesan"
                           />
                         </div>
@@ -546,14 +641,25 @@ const CommunicationHub = () => {
 
                       <div>
                         <Label htmlFor="recipients">Penerima</Label>
-                        <Select value={composeData.recipients} onValueChange={(value) => setComposeData({ ...composeData, recipients: value })}>
+                        <Select
+                          value={composeData.recipients}
+                          onValueChange={(value) =>
+                            setComposeData({
+                              ...composeData,
+                              recipients: value,
+                            })
+                          }
+                        >
                           <SelectTrigger>
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
+                            {" "}
                             <SelectItem value="all">Semua Anggota</SelectItem>
-                            {mockUsers.map(user => (
-                              <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
+                            {users.map((user) => (
+                              <SelectItem key={user.id} value={user.id}>
+                                {user.name}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -564,7 +670,12 @@ const CommunicationHub = () => {
                         <Textarea
                           id="content"
                           value={composeData.content}
-                          onChange={(e) => setComposeData({ ...composeData, content: e.target.value })}
+                          onChange={(e) =>
+                            setComposeData({
+                              ...composeData,
+                              content: e.target.value,
+                            })
+                          }
                           placeholder="Tulis pesan Anda..."
                           rows={5}
                         />
@@ -577,7 +688,10 @@ const CommunicationHub = () => {
                         >
                           Batal
                         </Button>
-                        <Button onClick={handleSendMessage} disabled={!composeData.content.trim()}>
+                        <Button
+                          onClick={handleSendMessage}
+                          disabled={!composeData.content.trim()}
+                        >
                           <Send className="h-4 w-4 mr-2" />
                           Kirim
                         </Button>
@@ -588,44 +702,61 @@ const CommunicationHub = () => {
               </div>
 
               {/* Pinned Messages */}
-              {messages.filter(m => m.isPinned).length > 0 && (
+              {messages.filter((m) => m.isPinned).length > 0 && (
                 <div className="mb-6">
                   <div className="flex items-center gap-2 mb-3">
                     <Pin className="h-4 w-4 text-yellow-600" />
-                    <span className="text-sm font-medium text-yellow-700">Pesan Penting</span>
+                    <span className="text-sm font-medium text-yellow-700">
+                      Pesan Penting
+                    </span>
                   </div>
                   <div className="space-y-2">
-                    {messages.filter(m => m.isPinned).map((message) => (
-                      <div key={`pinned-${message.id}`} className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Badge className={getTypeColor(message.type)}>
-                                {getTypeIcon(message.type)}
-                                <span className="ml-1 capitalize">{message.type}</span>
-                              </Badge>
-                              <div className={`w-2 h-2 rounded-full ${getPriorityColor(message.priority)}`}></div>
+                    {messages
+                      .filter((m) => m.isPinned)
+                      .map((message) => (
+                        <div
+                          key={`pinned-${message.id}`}
+                          className="bg-yellow-50 border border-yellow-200 rounded-lg p-3"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <Badge className={getTypeColor(message.type)}>
+                                  {getTypeIcon(message.type)}
+                                  <span className="ml-1 capitalize">
+                                    {message.type}
+                                  </span>
+                                </Badge>
+                                <div
+                                  className={`w-2 h-2 rounded-full ${getPriorityColor(
+                                    message.priority
+                                  )}`}
+                                ></div>
+                              </div>
+                              {message.title && (
+                                <h4 className="font-medium text-gray-900 mb-1">
+                                  {message.title}
+                                </h4>
+                              )}
+                              <p className="text-sm text-gray-700 mb-2">
+                                {message.content}
+                              </p>
+                              <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <span>{message.sender.name}</span>
+                                <span>•</span>
+                                <span>{formatTime(message.timestamp)}</span>
+                              </div>
                             </div>
-                            {message.title && (
-                              <h4 className="font-medium text-gray-900 mb-1">{message.title}</h4>
-                            )}
-                            <p className="text-sm text-gray-700 mb-2">{message.content}</p>
-                            <div className="flex items-center gap-2 text-xs text-gray-500">
-                              <span>{message.sender.name}</span>
-                              <span>•</span>
-                              <span>{formatTime(message.timestamp)}</span>
-                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => togglePin(message.id)}
+                            >
+                              <Pin className="h-4 w-4" />
+                            </Button>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => togglePin(message.id)}
-                          >
-                            <Pin className="h-4 w-4" />
-                          </Button>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               )}
@@ -633,88 +764,139 @@ const CommunicationHub = () => {
               {/* Messages List */}
               <div className="space-y-4">
                 {filteredMessages.map((message) => (
-                  <div key={message.id} className={`border rounded-lg p-4 ${!message.isRead && message.sender.id !== currentUserId ? 'bg-blue-50 border-blue-200' : 'bg-white'}`}>
+                  <div
+                    key={message.id}
+                    className={`border rounded-lg p-4 ${
+                      !message.isRead && message.sender.id !== currentUserId
+                        ? "bg-blue-50 border-blue-200"
+                        : "bg-white"
+                    }`}
+                  >
                     <div className="flex items-start gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={message.sender.avatar} />
-                        <AvatarFallback>{message.sender.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>
+                          {message.sender.name.charAt(0)}
+                        </AvatarFallback>
                       </Avatar>
-                      
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-900">{message.sender.name}</span>
-                            <Badge variant="outline" className="text-xs capitalize">{message.sender.role}</Badge>
+                            <span className="font-medium text-gray-900">
+                              {message.sender.name}
+                            </span>
+                            <Badge
+                              variant="outline"
+                              className="text-xs capitalize"
+                            >
+                              {message.sender.role}
+                            </Badge>
                             <Badge className={getTypeColor(message.type)}>
                               {getTypeIcon(message.type)}
-                              <span className="ml-1 capitalize">{message.type}</span>
+                              <span className="ml-1 capitalize">
+                                {message.type}
+                              </span>
                             </Badge>
-                            <div className={`w-2 h-2 rounded-full ${getPriorityColor(message.priority)}`}></div>
+                            <div
+                              className={`w-2 h-2 rounded-full ${getPriorityColor(
+                                message.priority
+                              )}`}
+                            ></div>
                           </div>
-                          
+
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-500">{formatTime(message.timestamp)}</span>
-                            {message.isPinned && <Pin className="h-4 w-4 text-yellow-600" />}
+                            <span className="text-xs text-gray-500">
+                              {formatTime(message.timestamp)}
+                            </span>
+                            {message.isPinned && (
+                              <Pin className="h-4 w-4 text-yellow-600" />
+                            )}
                             <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => togglePin(message.id)}
                             >
-                              <Pin className={`h-4 w-4 ${message.isPinned ? 'text-yellow-600' : 'text-gray-400'}`} />
+                              <Pin
+                                className={`h-4 w-4 ${
+                                  message.isPinned
+                                    ? "text-yellow-600"
+                                    : "text-gray-400"
+                                }`}
+                              />
                             </Button>
                           </div>
                         </div>
 
                         {message.title && (
-                          <h4 className="font-semibold text-gray-900 mb-2">{message.title}</h4>
+                          <h4 className="font-semibold text-gray-900 mb-2">
+                            {message.title}
+                          </h4>
                         )}
 
                         <p className="text-gray-700 mb-3">{message.content}</p>
 
-                        {message.attachments && message.attachments.length > 0 && (
-                          <div className="mb-3">
-                            <p className="text-sm font-medium text-gray-700 mb-2">Lampiran:</p>
-                            <div className="space-y-2">
-                              {message.attachments.map((attachment, index) => (
-                                <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded border">
-                                  <Paperclip className="h-4 w-4 text-gray-400" />
-                                  <span className="text-sm text-gray-700 flex-1">{attachment.name}</span>
-                                  <span className="text-xs text-gray-500">{formatFileSize(attachment.size)}</span>
-                                  <Button variant="ghost" size="sm">
-                                    <Download className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              ))}
+                        {message.attachments &&
+                          message.attachments.length > 0 && (
+                            <div className="mb-3">
+                              <p className="text-sm font-medium text-gray-700 mb-2">
+                                Lampiran:
+                              </p>
+                              <div className="space-y-2">
+                                {message.attachments.map(
+                                  (attachment, index) => (
+                                    <div
+                                      key={index}
+                                      className="flex items-center gap-2 p-2 bg-gray-50 rounded border"
+                                    >
+                                      <Paperclip className="h-4 w-4 text-gray-400" />
+                                      <span className="text-sm text-gray-700 flex-1">
+                                        {attachment.name}
+                                      </span>
+                                      <span className="text-xs text-gray-500">
+                                        {formatFileSize(attachment.size)}
+                                      </span>
+                                      <Button variant="ghost" size="sm">
+                                        <Download className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                  )
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
                         {message.readBy.length > 0 && (
                           <div className="mb-3">
+                            {" "}
                             <p className="text-xs text-gray-500">
                               Dibaca oleh {message.readBy.length} orang
-                              {message.readBy.length < mockUsers.length && ` • ${mockUsers.length - message.readBy.length} belum membaca`}
+                              {message.readBy.length < users.length &&
+                                ` • ${
+                                  users.length - message.readBy.length
+                                } belum membaca`}
                             </p>
                           </div>
                         )}
 
                         <div className="flex items-center gap-2">
-                          {!message.isRead && message.sender.id !== currentUserId && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => markAsRead(message.id)}
-                            >
-                              <CheckCircle className="h-4 w-4 mr-1" />
-                              Tandai Dibaca
-                            </Button>
-                          )}
-                          
+                          {!message.isRead &&
+                            message.sender.id !== currentUserId && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => markAsRead(message.id)}
+                              >
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                Tandai Dibaca
+                              </Button>
+                            )}
+
                           <Button variant="outline" size="sm">
                             <Reply className="h-4 w-4 mr-1" />
                             Balas
                           </Button>
-                          
+
                           <Button variant="outline" size="sm">
                             <Forward className="h-4 w-4 mr-1" />
                             Teruskan
@@ -725,17 +907,28 @@ const CommunicationHub = () => {
                         {message.replies && message.replies.length > 0 && (
                           <div className="mt-4 pl-4 border-l-2 border-gray-200 space-y-3">
                             {message.replies.map((reply) => (
-                              <div key={reply.id} className="flex items-start gap-2">
+                              <div
+                                key={reply.id}
+                                className="flex items-start gap-2"
+                              >
                                 <Avatar className="h-6 w-6">
                                   <AvatarImage src={reply.sender.avatar} />
-                                  <AvatarFallback className="text-xs">{reply.sender.name.charAt(0)}</AvatarFallback>
+                                  <AvatarFallback className="text-xs">
+                                    {reply.sender.name.charAt(0)}
+                                  </AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-sm font-medium text-gray-900">{reply.sender.name}</span>
-                                    <span className="text-xs text-gray-500">{formatTime(reply.timestamp)}</span>
+                                    <span className="text-sm font-medium text-gray-900">
+                                      {reply.sender.name}
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                      {formatTime(reply.timestamp)}
+                                    </span>
                                   </div>
-                                  <p className="text-sm text-gray-700">{reply.content}</p>
+                                  <p className="text-sm text-gray-700">
+                                    {reply.content}
+                                  </p>
                                 </div>
                               </div>
                             ))}
@@ -750,7 +943,7 @@ const CommunicationHub = () => {
                             onChange={(e) => setReplyContent(e.target.value)}
                             className="flex-1"
                             onKeyPress={(e) => {
-                              if (e.key === 'Enter' && !e.shiftKey) {
+                              if (e.key === "Enter" && !e.shiftKey) {
                                 e.preventDefault();
                                 handleReply(message.id);
                               }
@@ -776,16 +969,20 @@ const CommunicationHub = () => {
                       Tidak ada pesan ditemukan
                     </h3>
                     <p className="text-gray-500 mb-4">
-                      {searchTerm || filterType !== "all" || filterPriority !== "all"
+                      {searchTerm ||
+                      filterType !== "all" ||
+                      filterPriority !== "all"
                         ? "Coba ubah filter atau kata kunci pencarian"
                         : "Belum ada pesan dalam grup"}
                     </p>
-                    {!searchTerm && filterType === "all" && filterPriority === "all" && (
-                      <Button onClick={() => setIsComposeDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Tulis Pesan Pertama
-                      </Button>
-                    )}
+                    {!searchTerm &&
+                      filterType === "all" &&
+                      filterPriority === "all" && (
+                        <Button onClick={() => setIsComposeDialogOpen(true)}>
+                          <Plus className="h-4 w-4 mr-2" />
+                          Tulis Pesan Pertama
+                        </Button>
+                      )}
                   </div>
                 )}
               </div>

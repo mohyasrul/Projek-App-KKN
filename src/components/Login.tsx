@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card";
 import { useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
-import { User, Lock } from "lucide-react";
+import { User, Lock, Building2 } from "lucide-react";
+import { APP_CONFIG } from "@/config/app.config";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -29,13 +30,13 @@ const Login = () => {
 
       if (success) {
         toast({
-          title: "Login Berhasil",
-          description: "Selamat datang di KKN15 Finance",
+          title: APP_CONFIG.labels.loginSuccess,
+          description: `${APP_CONFIG.labels.welcome} ${APP_CONFIG.appName}`,
         });
       } else {
         toast({
-          title: "Login Gagal",
-          description: "Cik atuh eta username atawa password na salah",
+          title: APP_CONFIG.labels.loginFailed,
+          description: APP_CONFIG.labels.loginError,
           variant: "destructive",
         });
       }
@@ -45,15 +46,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-700 to-blue-500 flex items-center justify-center p-4">
+    <div
+      className={`min-h-screen bg-gradient-to-br ${APP_CONFIG.branding.primaryColor} flex items-center justify-center p-4`}
+    >
       <div className="w-full max-w-md">
         <Card className="backdrop-blur-lg bg-white/10 border-white/20 shadow-2xl">
           <CardHeader className="text-center text-white">
+            {APP_CONFIG.branding.showLogo && (
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                  <Building2 className="w-8 h-8 text-white" />
+                </div>
+              </div>
+            )}
             <CardTitle className="text-3xl font-bold mb-2">
-              KKN15 Finance
+              {APP_CONFIG.appName}
             </CardTitle>
             <CardDescription className="text-blue-100">
-              Sing Hemat, Sing Aman, Sing Teratur
+              {APP_CONFIG.appDescription}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -63,7 +73,7 @@ const Login = () => {
                   <User className="absolute left-3 top-3 h-4 w-4 text-blue-200" />
                   <Input
                     type="text"
-                    placeholder="Username"
+                    placeholder={APP_CONFIG.labels.username}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="pl-10 bg-white/10 border-white/30 text-white placeholder:text-blue-200"
@@ -76,7 +86,7 @@ const Login = () => {
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-blue-200" />
                   <Input
                     type="password"
-                    placeholder="Password"
+                    placeholder={APP_CONFIG.labels.password}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 bg-white/10 border-white/30 text-white placeholder:text-blue-200"
@@ -86,22 +96,20 @@ const Login = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-white text-blue-700 hover:bg-blue-50 font-semibold"
+                className={`w-full bg-white ${APP_CONFIG.branding.accentColor} ${APP_CONFIG.branding.accentHover} font-semibold`}
                 disabled={isLoading}
               >
-                {isLoading ? "Masuk..." : "Masuk"}
+                {isLoading
+                  ? APP_CONFIG.labels.signingIn
+                  : APP_CONFIG.labels.signIn}
               </Button>
             </form>
-            <div className="mt-6 text-sm text-blue-100 text-center">
-              <p className="mb-2">Dibuat dengan:</p>
-              <p>
-                <strong>Cinta</strong> , <strong>Dedikasi</strong>, dan{" "}
-                <strong>Semangat</strong>
-              </p>
-              <p>
-                <strong>Love Pokonamah</strong>
-              </p>
-            </div>
+
+            {APP_CONFIG.footer.show && (
+              <div className="mt-6 text-sm text-blue-100 text-center">
+                <p>{APP_CONFIG.footer.text}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -32,7 +32,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   setIsCollapsed,
 }) => {
   const { user, logout } = useApp();
-
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
     { id: "income", label: "Pemasukan", icon: Plus },
@@ -40,8 +39,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     { id: "programs", label: "Program Kerja", icon: FileText },
     { id: "students", label: "Peserta KKN", icon: Users },
     { id: "activities", label: "Kegiatan", icon: Calendar },
-    { id: "locations", label: "Lokasi", icon: MapPin },
-    { id: "communication", label: "Komunikasi", icon: MessageSquare },
     { id: "reports", label: "Laporan", icon: FileText },
   ];
 

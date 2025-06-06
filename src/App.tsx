@@ -4,6 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProvider, useApp } from "@/contexts/AppContext";
+import { DataProvider } from "@/contexts/DataContext";
+import { APP_CONFIG } from "@/config/app.config";
 import Login from "@/components/Login";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
@@ -13,9 +15,8 @@ import ExpenseManagement from "@/components/ExpenseManagement";
 import ProgramManagement from "@/components/ProgramManagement";
 import StudentManagement from "@/components/StudentManagement";
 import ActivityManagement from "@/components/ActivityManagement";
-import LocationManagement from "@/components/LocationManagement";
-import CommunicationHub from "@/components/CommunicationHub";
 import Reports from "@/components/Reports";
+import Settings from "@/components/Settings";
 import UpdateNotification from "@/components/UpdateNotification";
 import { cn } from "@/lib/utils";
 
@@ -34,49 +35,48 @@ const MainApp = () => {
     switch (tab) {
       case "dashboard":
         return {
-          title: "Dashboard",
-          subtitle: "Ringkasan kegiatan dan keuangan KKN",
+          title: APP_CONFIG.labels.dashboardTitle,
+          subtitle: APP_CONFIG.labels.dashboardSubtitle,
         };
       case "income":
         return {
-          title: "Pemasukan",
-          subtitle: "Kelola dana masuk program KKN",
+          title: APP_CONFIG.labels.incomeTitle,
+          subtitle: APP_CONFIG.labels.incomeSubtitle,
         };
       case "expense":
         return {
-          title: "Pengeluaran",
-          subtitle: "Kelola dana keluar program KKN",
+          title: APP_CONFIG.labels.expensesTitle,
+          subtitle: APP_CONFIG.labels.expensesSubtitle,
         };
       case "programs":
         return {
-          title: "Program Kerja",
-          subtitle: "Kelola program dan kegiatan KKN",
+          title: APP_CONFIG.labels.programsTitle,
+          subtitle: APP_CONFIG.labels.programsSubtitle,
         };
       case "students":
         return {
-          title: "Peserta KKN",
-          subtitle: "Kelola data peserta dan kelompok",
+          title: APP_CONFIG.labels.studentsTitle,
+          subtitle: APP_CONFIG.labels.studentsSubtitle,
         };
       case "activities":
         return {
-          title: "Kegiatan",
-          subtitle: "Kelola jadwal dan aktivitas harian",
+          title: APP_CONFIG.labels.activitiesTitle,
+          subtitle: APP_CONFIG.labels.activitiesSubtitle,
         };
-      case "locations":
-        return {
-          title: "Lokasi",
-          subtitle: "Kelola lokasi dan tempat kegiatan",
-        };
-      case "communication":
-        return { title: "Komunikasi", subtitle: "Pesan dan pengumuman" };
       case "reports":
-        return { title: "Laporan", subtitle: "Laporan keuangan dan kegiatan" };
+        return {
+          title: APP_CONFIG.labels.reportsTitle,
+          subtitle: APP_CONFIG.labels.reportsSubtitle,
+        };
       case "settings":
-        return { title: "Pengaturan", subtitle: "Konfigurasi aplikasi" };
+        return {
+          title: APP_CONFIG.labels.settingsTitle,
+          subtitle: APP_CONFIG.labels.settingsSubtitle,
+        };
       default:
         return {
-          title: "Dashboard",
-          subtitle: "Ringkasan kegiatan dan keuangan KKN",
+          title: APP_CONFIG.labels.dashboardTitle,
+          subtitle: APP_CONFIG.labels.dashboardSubtitle,
         };
     }
   };
@@ -95,18 +95,10 @@ const MainApp = () => {
         return <StudentManagement />;
       case "activities":
         return <ActivityManagement />;
-      case "locations":
-        return <LocationManagement />;
-      case "communication":
-        return <CommunicationHub />;
       case "reports":
         return <Reports />;
       case "settings":
-        return (
-          <div className="text-center py-8">
-            <p className="text-gray-500">Fitur Pengaturan akan segera hadir</p>
-          </div>
-        );
+        return <Settings />;
       default:
         return <Dashboard />;
     }
@@ -146,9 +138,11 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AppProvider>
-        <Toaster />
-        <Sonner />
-        <MainApp />
+        <DataProvider>
+          <Toaster />
+          <Sonner />
+          <MainApp />
+        </DataProvider>
       </AppProvider>
     </TooltipProvider>
   </QueryClientProvider>

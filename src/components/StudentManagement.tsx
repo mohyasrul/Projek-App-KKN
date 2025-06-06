@@ -34,88 +34,17 @@ import {
   UserCheck,
   GraduationCap,
 } from "lucide-react";
-
-interface Student {
-  id: string;
-  name: string;
-  nim: string;
-  university: string;
-  faculty: string;
-  major: string;
-  semester: number;
-  email: string;
-  phone: string;
-  address: string;
-  group: string;
-  position:
-    | "coordinator"
-    | "vice-coordinator"
-    | "secretary"
-    | "treasurer"
-    | "member";
-  joinDate: string;
-  status: "active" | "inactive" | "graduated";
-  avatar?: string;
-}
+import { useData, type Student } from "@/contexts/DataContext";
 
 const StudentManagement = () => {
-  const [students, setStudents] = useState<Student[]>([
-    {
-      id: "1",
-      name: "Ahmad Rizki",
-      nim: "2021001",
-      university: "Universitas ABC",
-      faculty: "Teknik",
-      major: "Informatika",
-      semester: 6,
-      email: "rizki@email.com",
-      phone: "08123456789",
-      address: "Jl. Merdeka No. 123",
-      group: "Kelompok A",
-      position: "coordinator",
-      joinDate: "2024-07-01",
-      status: "active",
-    },
-    {
-      id: "2",
-      name: "Siti Nurhaliza",
-      nim: "2021002",
-      university: "Universitas ABC",
-      faculty: "Ekonomi",
-      major: "Manajemen",
-      semester: 6,
-      email: "siti@email.com",
-      phone: "08234567890",
-      address: "Jl. Sudirman No. 456",
-      group: "Kelompok A",
-      position: "secretary",
-      joinDate: "2024-07-01",
-      status: "active",
-    },
-    {
-      id: "3",
-      name: "Budi Santoso",
-      nim: "2021003",
-      university: "Universitas XYZ",
-      faculty: "Pertanian",
-      major: "Agroteknologi",
-      semester: 6,
-      email: "budi@email.com",
-      phone: "08345678901",
-      address: "Jl. Gatot Subroto No. 789",
-      group: "Kelompok B",
-      position: "member",
-      joinDate: "2024-07-01",
-      status: "active",
-    },
-  ]);
+  const { students, addStudent, updateStudent, deleteStudent } = useData();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
-  const [newStudent, setNewStudent] = useState<Partial<Student>>({
+  const [newStudent, setNewStudent] = useState({
     name: "",
     nim: "",
     university: "",
@@ -125,20 +54,21 @@ const StudentManagement = () => {
     email: "",
     phone: "",
     address: "",
-    group: "",
-    position: "member",
-    status: "active",
+    program: "",
+    position: "member" as Student["position"],
+    status: "active" as Student["status"],
+    gpa: 0,
+    joinDate: "",
+    emergencyContact: {
+      name: "",
+      relationship: "",
+      phone: "",
+    },
+    skills: [] as string[],
+    interests: [] as string[],
   });
 
-  const groups = [...new Set(students.map((s) => s.group))];
-  const positions = [
-    { value: "coordinator", label: "Koordinator" },
-    { value: "vice-coordinator", label: "Wakil Koordinator" },
-    { value: "secretary", label: "Sekretaris" },
-    { value: "treasurer", label: "Bendahara" },
-    { value: "member", label: "Anggota" },
-  ];
-
+  // Define status options and positions
   const statusOptions = [
     { value: "active", label: "Aktif", color: "bg-green-100 text-green-800" },
     {
@@ -146,8 +76,18 @@ const StudentManagement = () => {
       label: "Tidak Aktif",
       color: "bg-red-100 text-red-800",
     },
-    { value: "graduated", label: "Lulus", color: "bg-blue-100 text-blue-800" },
+    { value: "alumni", label: "Alumni", color: "bg-blue-100 text-blue-800" },
   ];
+
+  const positions = [
+    { value: "coordinator", label: "Koordinator" },
+    { value: "vice_coordinator", label: "Wakil Koordinator" },
+    { value: "secretary", label: "Sekretaris" },
+    { value: "treasurer", label: "Bendahara" },
+    { value: "member", label: "Anggota" },
+  ];
+
+  const groups = [...new Set(students.map((s) => s.program || "General"))];
 
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
@@ -155,7 +95,8 @@ const StudentManagement = () => {
       student.nim.includes(searchTerm) ||
       student.university.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesGroup =
-      selectedGroup === "all" || student.group === selectedGroup;
+      selectedGroup === "all" ||
+      (student.program || "General") === selectedGroup;
     const matchesStatus =
       selectedStatus === "all" || student.status === selectedStatus;
 
@@ -164,34 +105,40 @@ const StudentManagement = () => {
 
   const handleAddStudent = () => {
     if (newStudent.name && newStudent.nim && newStudent.university) {
-      const student: Student = {
-        id: Date.now().toString(),
-        joinDate: new Date().toISOString().split("T")[0],
-        ...(newStudent as Student),
-      };
-
-      setStudents([...students, student]);
-      setNewStudent({
-        name: "",
-        nim: "",
-        university: "",
-        faculty: "",
-        major: "",
-        semester: 6,
-        email: "",
-        phone: "",
-        address: "",
-        group: "",
-        position: "member",
-        status: "active",
+      addStudent({
+        ...newStudent,
+        joinDate: newStudent.joinDate || new Date().toISOString().split("T")[0],
       });
+      resetForm();
       setIsAddDialogOpen(false);
     }
   };
 
   const handleEditStudent = (student: Student) => {
     setEditingStudent(student);
-    setNewStudent(student);
+    setNewStudent({
+      name: student.name,
+      nim: student.nim,
+      university: student.university,
+      faculty: student.faculty,
+      major: student.major,
+      semester: student.semester,
+      email: student.email,
+      phone: student.phone,
+      address: student.address,
+      program: student.program || "",
+      position: student.position || "member",
+      status: student.status,
+      gpa: student.gpa || 0,
+      joinDate: student.joinDate || "",
+      emergencyContact: student.emergencyContact || {
+        name: "",
+        relationship: "",
+        phone: "",
+      },
+      skills: student.skills || [],
+      interests: student.interests || [],
+    });
     setIsAddDialogOpen(true);
   };
 
@@ -202,34 +149,42 @@ const StudentManagement = () => {
       newStudent.nim &&
       newStudent.university
     ) {
-      setStudents(
-        students.map((s) =>
-          s.id === editingStudent.id
-            ? { ...editingStudent, ...(newStudent as Student) }
-            : s
-        )
-      );
+      updateStudent(editingStudent.id, newStudent);
       setEditingStudent(null);
-      setNewStudent({
-        name: "",
-        nim: "",
-        university: "",
-        faculty: "",
-        major: "",
-        semester: 6,
-        email: "",
-        phone: "",
-        address: "",
-        group: "",
-        position: "member",
-        status: "active",
-      });
+      resetForm();
       setIsAddDialogOpen(false);
     }
   };
 
   const handleDeleteStudent = (id: string) => {
-    setStudents(students.filter((s) => s.id !== id));
+    deleteStudent(id);
+  };
+
+  const resetForm = () => {
+    setNewStudent({
+      name: "",
+      nim: "",
+      university: "",
+      faculty: "",
+      major: "",
+      semester: 6,
+      email: "",
+      phone: "",
+      address: "",
+      program: "",
+      position: "member" as Student["position"],
+      status: "active" as Student["status"],
+      gpa: 0,
+      joinDate: "",
+      emergencyContact: {
+        name: "",
+        relationship: "",
+        phone: "",
+      },
+      skills: [],
+      interests: [],
+    });
+    setEditingStudent(null);
   };
 
   const getPositionLabel = (position: string) => {
@@ -241,7 +196,6 @@ const StudentManagement = () => {
     const statusOption = statusOptions.find((s) => s.value === status);
     return statusOption ? statusOption : statusOptions[0];
   };
-
   const stats = [
     {
       title: "Total Peserta",
@@ -469,14 +423,17 @@ const StudentManagement = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="group">Kelompok</Label>
+                    <Label htmlFor="program">Program/Kelompok</Label>
                     <Input
-                      id="group"
-                      value={newStudent.group || ""}
+                      id="program"
+                      value={newStudent.program || ""}
                       onChange={(e) =>
-                        setNewStudent({ ...newStudent, group: e.target.value })
+                        setNewStudent({
+                          ...newStudent,
+                          program: e.target.value,
+                        })
                       }
-                      placeholder="Kelompok A"
+                      placeholder="KKN15 A"
                     />
                   </div>
 
@@ -500,6 +457,46 @@ const StudentManagement = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="status">Status</Label>
+                    <Select
+                      value={newStudent.status || "active"}
+                      onValueChange={(value) =>
+                        setNewStudent({ ...newStudent, status: value as any })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Pilih status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {statusOptions.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="gpa">IPK</Label>
+                    <Input
+                      id="gpa"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      max="4"
+                      value={newStudent.gpa || 0}
+                      onChange={(e) =>
+                        setNewStudent({
+                          ...newStudent,
+                          gpa: parseFloat(e.target.value) || 0,
+                        })
+                      }
+                      placeholder="3.50"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -521,20 +518,7 @@ const StudentManagement = () => {
                     onClick={() => {
                       setIsAddDialogOpen(false);
                       setEditingStudent(null);
-                      setNewStudent({
-                        name: "",
-                        nim: "",
-                        university: "",
-                        faculty: "",
-                        major: "",
-                        semester: 6,
-                        email: "",
-                        phone: "",
-                        address: "",
-                        group: "",
-                        position: "member",
-                        status: "active",
-                      });
+                      resetForm();
                     }}
                   >
                     Batal
@@ -581,7 +565,6 @@ const StudentManagement = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex space-x-4">
                         <Avatar className="h-12 w-12">
-                          <AvatarImage src={student.avatar} />
                           <AvatarFallback className="bg-blue-100 text-blue-600">
                             {student.name
                               .split(" ")
@@ -613,8 +596,8 @@ const StudentManagement = () => {
                             <div className="flex items-center space-x-1">
                               <Users className="h-4 w-4" />
                               <span>
-                                {student.group} -{" "}
-                                {getPositionLabel(student.position)}
+                                {student.program || "General"} -{" "}
+                                {getPositionLabel(student.position || "member")}
                               </span>
                             </div>
                             <div className="flex items-center space-x-1">

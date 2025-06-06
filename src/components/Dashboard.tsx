@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useApp } from "@/contexts/AppContext";
+import { useData } from "@/contexts/DataContext";
 import { formatCurrency } from "@/utils/formatters";
 import DataBackup from "./DataBackup";
 import SecurityStatus from "./SecurityStatus";
@@ -35,6 +36,8 @@ const Dashboard = () => {
     getBalance,
   } = useApp();
 
+  const { students, activities } = useData();
+
   const [showBackup, setShowBackup] = useState(false);
   const [showDataManagement, setShowDataManagement] = useState(true);
 
@@ -43,30 +46,16 @@ const Dashboard = () => {
   const balance = getBalance();
   const recentTransactions = transactions.slice(-5).reverse();
 
-  // Mock data untuk fitur KKN yang baru
-  const mockStudents = 15;
-  const mockActivities = 8;
-  const mockCompletedActivities = 5;
-  const mockUpcomingActivities = [
-    {
-      id: 1,
-      title: "Penyuluhan Kesehatan",
-      date: "2025-06-10",
-      status: "planned",
-    },
-    {
-      id: 2,
-      title: "Gotong Royong Desa",
-      date: "2025-06-12",
-      status: "planned",
-    },
-    {
-      id: 3,
-      title: "Pelatihan Komputer",
-      date: "2025-06-15",
-      status: "planned",
-    },
-  ];
+  // Data untuk fitur KKN - menggunakan data real
+  const totalStudents = students.length;
+  const activeStudents = students.filter((s) => s.status === "active").length;
+  const totalActivities = activities.length;
+  const completedActivities = activities.filter(
+    (a) => a.status === "completed"
+  ).length;
+  const upcomingActivities = activities
+    .filter((a) => a.status === "planned" && new Date(a.startDate) > new Date())
+    .slice(0, 3);
 
   const stats = [
     {
@@ -100,7 +89,7 @@ const Dashboard = () => {
     },
     {
       title: "Total Peserta",
-      value: mockStudents,
+      value: totalStudents,
       icon: Users,
       color: "text-indigo-600",
       bg: "bg-indigo-50",
@@ -108,7 +97,7 @@ const Dashboard = () => {
     },
     {
       title: "Kegiatan Selesai",
-      value: mockCompletedActivities,
+      value: completedActivities,
       icon: CheckCircle,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
@@ -330,7 +319,7 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {mockUpcomingActivities.map((activity) => (
+              {upcomingActivities.map((activity) => (
                 <div
                   key={activity.id}
                   className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50"
@@ -339,11 +328,14 @@ const Dashboard = () => {
                     <p className="font-medium text-sm">{activity.title}</p>
                     <p className="text-xs text-gray-500 flex items-center mt-1">
                       <Calendar className="h-3 w-3 mr-1" />
-                      {new Date(activity.date).toLocaleDateString("id-ID", {
-                        weekday: "short",
-                        day: "numeric",
-                        month: "short",
-                      })}
+                      {new Date(activity.startDate).toLocaleDateString(
+                        "id-ID",
+                        {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                        }
+                      )}
                     </p>
                   </div>
                   <Badge variant="outline" className="text-xs">
@@ -353,7 +345,7 @@ const Dashboard = () => {
                   </Badge>
                 </div>
               ))}
-              {mockUpcomingActivities.length === 0 && (
+              {upcomingActivities.length === 0 && (
                 <p className="text-gray-500 text-center py-4">
                   Tidak ada kegiatan mendatang
                 </p>
