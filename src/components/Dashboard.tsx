@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useApp } from "@/contexts/AppContext";
 import { formatCurrency } from "@/utils/formatters";
 import DataBackup from "./DataBackup";
@@ -16,6 +17,13 @@ import {
   Settings,
   Eye,
   EyeOff,
+  Users,
+  Calendar,
+  MapPin,
+  CheckCircle,
+  Clock,
+  Target,
+  Activity,
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -34,6 +42,31 @@ const Dashboard = () => {
   const totalExpense = getTotalExpense();
   const balance = getBalance();
   const recentTransactions = transactions.slice(-5).reverse();
+
+  // Mock data untuk fitur KKN yang baru
+  const mockStudents = 15;
+  const mockActivities = 8;
+  const mockCompletedActivities = 5;
+  const mockUpcomingActivities = [
+    {
+      id: 1,
+      title: "Penyuluhan Kesehatan",
+      date: "2025-06-10",
+      status: "planned",
+    },
+    {
+      id: 2,
+      title: "Gotong Royong Desa",
+      date: "2025-06-12",
+      status: "planned",
+    },
+    {
+      id: 3,
+      title: "Pelatihan Komputer",
+      date: "2025-06-15",
+      status: "planned",
+    },
+  ];
 
   const stats = [
     {
@@ -65,10 +98,90 @@ const Dashboard = () => {
       bg: "bg-purple-50",
       isCount: true,
     },
+    {
+      title: "Total Peserta",
+      value: mockStudents,
+      icon: Users,
+      color: "text-indigo-600",
+      bg: "bg-indigo-50",
+      isCount: true,
+    },
+    {
+      title: "Kegiatan Selesai",
+      value: mockCompletedActivities,
+      icon: CheckCircle,
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      isCount: true,
+    },
   ];
 
   return (
     <div className="space-y-6">
+      {/* KKN Overview Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">
+                  Program KKN Periode 2025
+                </h3>
+                <p className="text-blue-100 mb-4">Juli - Agustus 2025</p>
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="text-blue-200">Durasi</p>
+                    <p className="font-semibold">45 Hari</p>
+                  </div>
+                  <div>
+                    <p className="text-blue-200">Lokasi</p>
+                    <p className="font-semibold">Desa Makmur</p>
+                  </div>
+                  <div>
+                    <p className="text-blue-200">Progress</p>
+                    <p className="font-semibold">62%</p>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <Activity className="h-12 w-12 text-blue-200 mb-2" />
+                <Badge className="bg-white text-blue-600">Aktif</Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">
+                  Pencapaian Minggu Ini
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="h-4 w-4" />
+                    <span className="text-sm">3 kegiatan selesai</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4" />
+                    <span className="text-sm">2 kegiatan berlangsung</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Target className="h-4 w-4" />
+                    <span className="text-sm">Target tercapai 85%</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold">85%</div>
+                <p className="text-emerald-200 text-sm">Target Mingguan</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
@@ -94,7 +207,7 @@ const Dashboard = () => {
         })}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
@@ -204,6 +317,53 @@ const Dashboard = () => {
                   );
                 })
               )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Calendar className="h-5 w-5" />
+              <span>Kegiatan Mendatang</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {mockUpcomingActivities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="flex justify-between items-center p-3 border rounded-lg hover:bg-gray-50"
+                >
+                  <div>
+                    <p className="font-medium text-sm">{activity.title}</p>
+                    <p className="text-xs text-gray-500 flex items-center mt-1">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {new Date(activity.date).toLocaleDateString("id-ID", {
+                        weekday: "short",
+                        day: "numeric",
+                        month: "short",
+                      })}
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="text-xs">
+                    {activity.status === "planned"
+                      ? "Direncanakan"
+                      : activity.status}
+                  </Badge>
+                </div>
+              ))}
+              {mockUpcomingActivities.length === 0 && (
+                <p className="text-gray-500 text-center py-4">
+                  Tidak ada kegiatan mendatang
+                </p>
+              )}
+              <div className="pt-2 border-t">
+                <Button variant="outline" size="sm" className="w-full">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Lihat Semua Kegiatan
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
