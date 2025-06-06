@@ -161,12 +161,11 @@ const ActivityManagement = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
-  
-  const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({
     title: "",
     description: "",
     category: "",
-    priority: "medium" as const,
+    priority: "medium" as "low" | "medium" | "high",
     startDate: "",
     endDate: "",
     location: "",
